@@ -3,13 +3,15 @@ const express= require('express')
 const morgan= require('morgan') // midleware, used for logging request details
 const cors = require('cors')
 const helmet= require('helmet')
-const {NODE_ENV}= require('./config')
+const {NODE_ENV,CLIENT_ORIGIN}= require('./config')
 
 const app= express()
 
 const morganSetting=(NODE_ENV === 'production'? 'tiny': 'common')
 app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny
-app.use(cors())
+app.use(cors({
+    origin: CLIENT_ORIGIN
+}))
 app.use(helmet())
 
 app.get('/', (req,res)=>{
