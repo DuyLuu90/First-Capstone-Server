@@ -5,6 +5,8 @@ const cors = require('cors')
 const helmet= require('helmet')
 const {NODE_ENV,CLIENT_ORIGIN}= require('./config')
 
+const movieRouter= require('./endpoint-001-movies/movies-router')
+
 const app= express()
 
 const morganSetting=(NODE_ENV === 'production'? 'tiny': 'common')
@@ -14,9 +16,8 @@ app.use(cors({
 }))
 app.use(helmet())
 
-app.get('/', (req,res)=>{
-    res.send("Hello, boilerplate")
-})
+app.use('/api/movies',movieRouter)
+
 //error handler middleware
 app.use((error, req,res, next)=>{
     let response;

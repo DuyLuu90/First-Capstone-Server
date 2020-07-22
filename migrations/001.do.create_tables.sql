@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
     country TEXT NOT NULL,
     nickname TEXT,
     gender TEXT NOT NULL,
-    date_created TIMESTAMPTZ NOT NULL DEFAULT now(),
-    block_list BOOLEAN NOT NULL DEFAULT false
+    block_list BOOLEAN NOT NULL DEFAULT false,
+    last_modified TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS movies (
@@ -18,8 +18,10 @@ CREATE TABLE IF NOT EXISTS movies (
     posterUrl TEXT DEFAULT 'https://imgc.allpostersimages.com/img/print/u-g-PILE2Y0.jpg',
     trailerUrl TEXT,
     summary TEXT DEFAULT 'Not yet available',
-    year DATE NOT NULL,
-    country TEXT NOT NULL 
+    year INTEGER NOT NULL,
+    country TEXT NOT NULL,
+    genres TEXT [],
+    last_modified TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS artists (
@@ -31,8 +33,9 @@ CREATE TABLE IF NOT EXISTS artists (
 CREATE TABLE IF NOT EXISTS movie_cast(
     id SERIAL PRIMARY KEY,
     movieId INTEGER REFERENCES movies(id) ON DELETE CASCADE NOT NULL,
-    artist_id INTEGER REFERENCES artists(id) ON DELETE CASCADE,
-    artist_role TEXT NOT NULL
+    director INTEGER REFERENCES artists(id) ON DELETE CASCADE,
+    actor_1 INTEGER REFERENCES artists(id) ON DELETE CASCADE,
+    actor_2 INTEGER REFERENCES artists(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS reviews(
