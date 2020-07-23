@@ -5,6 +5,7 @@ function requireAuth(req,res,next) {
     if (!authToken.toLowerCase().startsWith('basic')){
         return res.status(401).json({error:`Missing basic token`});
     }
+    next()
 /*
     let basicToken=authToken.slice(6,authToken.length)
     const[tokenUserName, tokenPassword]= AuthService.parseBasicToken(basicToken)

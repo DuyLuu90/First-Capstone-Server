@@ -13,12 +13,13 @@ const movieRouter= express.Router()
 const sanitizedMovie= movie=>({
     id: movie.id,
     title: xss(movie.title),
-    posterUrl: movie.posterUrl,
-    trailerUrl: movie.trailerUrl,
+    posterurl: movie.posterurl,
+    trailerurl: movie.trailerurl,
     summary: xss(movie.summary),
     year: Number(movie.year),
     country: movie.country,
-    genres: movie.genres
+    genres: movie.genres,
+    last_modified: movie.last_modified,
 })
 
 movieRouter.route('/')
@@ -51,8 +52,8 @@ movieRouter.route('/')
 movieRouter.route('/:movieId')
     .all(requireAuth)
     .all((req,res,next)=>{
-        const {id}= req.params
-        MovieService.getMovieById(req.app.get('db'),id)
+        const {movieId}= req.params
+        MovieService.getMovieById(req.app.get('db'),movieId)
             .then(movie=>{
                 if(!movie) {
                     return res.status(404).json({error:{
@@ -89,7 +90,7 @@ movieRouter.route('/:movieId')
         .catch(next)
     })
 
-movieRouter.route('/:genres')
+movieRouter.route('/genres/:genres')
     .all(requireAuth)
     .get((req,res,next)=>{
         const {genres}= req.params

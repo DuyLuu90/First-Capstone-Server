@@ -9,10 +9,14 @@ const movieRouter= require('./endpoint-001-movies/movies-router')
 
 const app= express()
 
-const morganSetting=(NODE_ENV === 'production'? 'tiny': 'common')
-app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny
+//const morganSetting=(NODE_ENV === 'production'? 'tiny': 'common')
+//app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny
+
+//app.use(cors())
+
+
 app.use(cors({
-    origin: CLIENT_ORIGIN
+    origin: 'http://localhost:3000'
 }))
 app.use(helmet())
 

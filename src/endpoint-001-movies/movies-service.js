@@ -1,17 +1,19 @@
 const xss= require('xss')
 const Treeize = require('treeize')
-const Knex = require('knex')
+//const Knex = require('knex')
 
 
 const MovieService = {
     getAllMovies(db) {
-        return db('movies').select('*')  
+        return db('movies').select('*')
     },
     getMovieById(db,id){
         return db('movies').where({id}).first()
     },
     getMovieByGenres(db,genres){
-        return db('movies').where(genres in {genres})
+        return db('movies').select('*').then(movies=>{
+            return movies.filter(movie=>movie.genres.includes(genres))
+        })   
     },
     insertMovie(db,newMovie){
         return db.insert(newMovie).into('movies')
