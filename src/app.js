@@ -6,6 +6,7 @@ const helmet= require('helmet')
 const {NODE_ENV,CLIENT_ORIGIN}= require('./config')
 
 const movieRouter= require('./endpoint-001-movies/movies-router')
+const userRouter= require('./endpoint-002-users/users-router')
 
 const app= express()
 
@@ -21,6 +22,8 @@ app.use(cors({
 app.use(helmet())
 
 app.use('/api/movies',movieRouter)
+app.use('/api/users',userRouter)
+
 
 //error handler middleware
 app.use((error, req,res, next)=>{

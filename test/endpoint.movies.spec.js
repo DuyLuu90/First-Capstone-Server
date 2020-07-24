@@ -1,7 +1,7 @@
 const knex= require('knex')
 const helpers= require('./test-helpers')
 const app= require('../src/app')
-const supertest = require('supertest')
+//const supertest = require('supertest')
 
 describe('MOVIE ENDPOINT',()=>{
     //const {testMovies,testUsers,testReviews} = helpers.makeTestData()

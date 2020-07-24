@@ -7,7 +7,6 @@ const xss= require('xss')
 const bodyParser= express.json()
 
 const MovieService= require('./movies-service')
-const { post } = require('../app')
 const movieRouter= express.Router()
 
 const sanitizedMovie= movie=>({
