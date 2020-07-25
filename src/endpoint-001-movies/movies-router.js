@@ -1,13 +1,17 @@
 const express= require('express')
-const {requireAuth}= require('../middleware/basic-auth')
 
-const path= require('path')
-const {isWebUrl}= require('valid-url')
 const xss= require('xss')
 const bodyParser= express.json()
+const path= require('path')
+const {isWebUrl}= require('valid-url')
+
 
 const MovieService= require('./movies-service')
 const movieRouter= express.Router()
+
+//MIDDLEWARE:
+const {requireBasicAuth}= require('../middleware/require-auth')
+const {movieValidation}= require('../middleware/form-validation')
 
 const sanitizedMovie= movie=>({
     id: movie.id,
@@ -22,7 +26,7 @@ const sanitizedMovie= movie=>({
 })
 
 movieRouter.route('/')
-    .all(requireAuth)
+    .all(requireBasicAuth)
     .get((req,res,next)=>{
         MovieService.getAllMovies(req.app.get('db'))
             .then(movies=>{
@@ -31,25 +35,18 @@ movieRouter.route('/')
             .catch(next)
     })
     .post(bodyParser,(req,res,next)=>{
-        const{title,posterUrl,trailerUrl,summary,year,country,genres}= req.body
+        movieValidation(req,res,next)
         const newMovie= {title,posterUrl,trailerUrl,summary,year,country,genres}
-        for (const field of ['title','year','country','genres']) {
-            if (!req.body[field]) {
-                return res.status(400).send(`${field} is required`)
-            }
-            if(!Number.isInteger(year)||year<1980) {
-                return res.status(400).send('Movie must be newer than 1980')
-            }
-            MovieService.insertMovie(req.app.get('db'),newMovie)
-                .then(movie=>{
-                    res.status(201)
-                    .location(path.poxis.join(req.originalUrl,`/${movie.id}`))
-                    .json(sanitizedMovie(movie))
-                })
-        } 
+        MovieService.insertMovie(req.app.get('db'),newMovie)
+            .then(movie=>{
+                res.status(201)
+                .location(path.poxis.join(req.originalUrl,`/${movie.id}`))
+                .json(sanitizedMovie(movie))
+            })
+        
     })
 movieRouter.route('/:movieId')
-    .all(requireAuth)
+    .all(requireBasicAuth)
     .all((req,res,next)=>{
         const {movieId}= req.params
         MovieService.getMovieById(req.app.get('db'),movieId)
@@ -90,7 +87,7 @@ movieRouter.route('/:movieId')
     })
 
 movieRouter.route('/genres/:genres')
-    .all(requireAuth)
+    .all(requireBasicAuth)
     .get((req,res,next)=>{
         const {genres}= req.params
         MovieService.getMovieByGenres(req.app.get('db'),genres)

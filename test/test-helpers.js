@@ -53,39 +53,39 @@ function makeUsersArray(){
     return [
         {
             id: 1,
-            first_name:'test first name 1' ,
-            last_name:'test last name 1' ,
-            username:'test username 1' ,
-            password: 'test password 1' ,
+            first_name:'firstName' ,
+            last_name:'lastName' ,
+            username:'testusername1' ,
+            password: 'testPassword1' ,
             age: 18 ,
             country:'United States' ,
-            nickname: 'some nickname' ,
+            nickname: 'nickname' ,
             gender: 'Male' ,
             block_list: false,
             last_modified: '2029-01-22T16:28:32.615Z'
         },
         {
             id: 2,
-            first_name:'test first name 2' ,
-            last_name:'test last name 2' ,
-            username:'test username 2' ,
-            password: 'test password 2' ,
+            first_name:'firstName' ,
+            last_name:'lastName' ,
+            username:'userName2' ,
+            password: 'testPassword2' ,
             age: 18 ,
             country:'Japan' ,
-            nickname: 'some nickname' ,
+            nickname: 'nickname' ,
             gender: 'Female' ,
             block_list: false,
             last_modified: '2029-01-22T16:28:32.615Z'
         },
         {
             id: 3,
-            first_name:'test first name 3' ,
-            last_name:'test last name 3' ,
-            username:'test username 3' ,
-            password: 'test password 3' ,
+            first_name:'firstName' ,
+            last_name:'lastName' ,
+            username:'userName3' ,
+            password: 'testPassword3' ,
             age: 18 ,
             country:'United States' ,
-            nickname: 'some nickname' ,
+            nickname: 'nickname' ,
             gender: 'Male' ,
             block_list: false,
             last_modified: '2029-01-22T16:28:32.615Z'
@@ -128,7 +128,7 @@ function makeTestData(){
     const testReviews= makeReviewsArray()
     return (testMovies,testUsers,testReviews)
 }*/
-/*
+
 function seedUsers(db,users) {
     const preppedUsers= users.map(user=>({
         ...user,
@@ -139,7 +139,7 @@ function seedUsers(db,users) {
             `SELECT setval('users_id_seq',?)`,
             [users[users.length-1].id], //update the auto sequence to stay in sync
         ))
-}*/
+}
 
 function seedMoviesTables(db,users=[],movies=[],reviews=[]){
     return db('users').insert(users)
@@ -170,6 +170,7 @@ function makeAuthHeader(user) {
 module.exports= {
     makeMoviesArray,
     makeUsersArray,
+    seedUsers,
     //makeTestData,
     seedMoviesTables,
     cleanTables,

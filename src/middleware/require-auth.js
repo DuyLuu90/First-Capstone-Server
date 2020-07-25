@@ -1,6 +1,6 @@
 //const AuthService = require('../endpoint-004-auth/auth-service')
 
-function requireAuth(req,res,next) {
+function requireBasicAuth(req,res,next) {
     const authToken = req.get(`Authorization`) || ''
     if (!authToken.toLowerCase().startsWith('basic')){
         return res.status(401).json({error:`Missing basic token`});
@@ -28,5 +28,10 @@ function requireAuth(req,res,next) {
         .catch(next)
 */
 }
+function requireAdminAuth(req,res,next) {
 
-module.exports= {requireAuth}
+}
+
+
+
+module.exports= {requireBasicAuth, requireAdminAuth}

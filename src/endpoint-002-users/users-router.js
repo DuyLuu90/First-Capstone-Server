@@ -1,64 +1,67 @@
 const express = require('express')
-const UserService = require('./users-service')
-//const {requireAuth}= require('../middleware/basic-auth')
 
 const path= require('path')
 const xss= require('xss')
-
 const bodyParser= express.json()
-const UserRouter= express.Router()
 
-UserRouter.route('/')
-    .get((req,res,next)=>{
+const UserRouter= express.Router()
+const UserService = require('./users-service')
+
+//MIDDLEWARE
+const {userValidation}= require('../middleware/form-validation')
+
+UserRouter
+    .get('/',(req,res,next)=>{
         UserService.getAllUsers(req.app.get('db'))
         .then(users=>{
             res.status(200).json(users)
         })
         .catch(next)
     })
-    .post(bodyParser,(req,res)=>{
-        const {first_name,last_name,username,password}= req.body
-        for( const field of ['first_name', 'last_name', 'username', 'password'])
-            if (!req.body[field]) {
-                return res.status(400).json({
-                    error: `Missing ${field} in req body`
-                })
-            }
-        UserService.validateName(first_name,last_name)
-            .then(nameError=>{
-                if(nameError) {return res.status(400).json({error: nameError})}
-            })
-            
-        UserService.validatePassword(password)
-            .then(passwordError=>{
-                if(passwordError) {return res.status(400).json({error:passwordError})}
-            })
-/*
-        const nameError= UserService.validateName(first_name,last_name)
-        if (nameError) {
-            return  res.status(400).json({error: nameError})
-        } 
-
-        const passwordError= UsersService.validatePassword(password)
-        if (passwordError) {
-            return res.status(400).json({error: passwordError})
+    .post('/',bodyParser,(req,res,next)=>{
+        //userValidation(req,res,next)
+        const errorMessage= userValidation(req,res,next)
+        console.log('Router',errorMessage)
+        if(errorMessage) {
+            return res.status(400).json({error: errorMessage})
         }
-*/        
+        const {first_name,last_name,username,password,nickname,age,gender,country}= req.body
+        const newUser= {first_name,last_name,username,password,nickname,age,gender,country}
+
         UserService.hasUserWithUserName(req.app.get('db'),username)
-            .then(hasUserWithUserName=>{
-                if(hasUserWithUserName){
-                    return res.status(400).json({
-                        error:`Username already taken`
+        .then(hasUser=>{
+            console.log('form-validation',hasUser)
+            if(hasUser) return res.status(400).json({error:`Username already taken`})
+            UserService.hashPassword(password)
+            .then(hashedPassword=>{
+                return UserService.insertUser(req.app.get('db'),{...newUser,password:hashedPassword})
+                    .then(user=>{
+                        res.status(201)
+                        .location(path.posix.join(req.originalUrl,`/${user.id}`))
+                        .json(user) 
                     })
-                }
-            })
+        })
+        })
+        .catch(next)
+
+    /*
+        return UserService.insertUser(req.app.get('db'),newUser)
+        .then(user=>{
+            res.status(201)
+            .location(path.posix.join(req.originalUrl,`/${user.id}`))
+            .json(user) 
+        })
+        .catch(next)
+    */   
+        
+        
     })
 
 UserRouter.route('/:UserId')
     .get((req,res,next)=>{
             
     })
-
+/*
 async function checkUserExists(req,res,next) {
     try {
         const User= await UserService.getUserById(
@@ -74,6 +77,6 @@ async function checkUserExists(req,res,next) {
     catch(error) {
         next(error)
     }
-}
+}*/
 
 module.exports= UserRouter

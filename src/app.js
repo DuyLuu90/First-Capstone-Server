@@ -7,6 +7,7 @@ const {NODE_ENV,CLIENT_ORIGIN}= require('./config')
 
 const movieRouter= require('./endpoint-001-movies/movies-router')
 const userRouter= require('./endpoint-002-users/users-router')
+const authRouter= require('./endpoint-003-auth/auth-router')
 
 const app= express()
 
@@ -23,6 +24,7 @@ app.use(helmet())
 
 app.use('/api/movies',movieRouter)
 app.use('/api/users',userRouter)
+app.use('/api/auth',authRouter)
 
 
 //error handler middleware

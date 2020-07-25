@@ -2,7 +2,7 @@ const xss= require('xss')
 const Treeize = require('treeize')
 const bcrypt = require('bcryptjs')
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
-const validLetters= /^[A-Za-z]+$/
+const validLetters=/^[A-Za-z ]+$/
 
 const UserService= {
     getAllUsers(db) {
@@ -25,8 +25,11 @@ const UserService= {
         return db('users').where({id}).update(fieldsToUpdate)
     },
     hasUserWithUserName(db,username){
-        return db('users')
-            .where({username})
+        /*
+        return db('users').select('*')
+        .then(users=>users.find(user=>user.username===username))
+        */
+        return db('users').where({username})
             .first()
             .then(user=>!!user)
     },
@@ -34,11 +37,10 @@ const UserService= {
     validateName(firstName,lastName){
         const fullName=firstName+lastName
         if (!validLetters.test(fullName)) {
-            return `Names must contain only valid letters`
+            return 'Names must contain only valid letters'
         }
         return null
     },
-
     validatePassword(password){
         if(password.length<8){
             return 'Password must be longer than 8 characters'

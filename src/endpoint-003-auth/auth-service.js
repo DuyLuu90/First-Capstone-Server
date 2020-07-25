@@ -4,9 +4,8 @@ const config = require('../config')
 //env file: "my-own-special-jwt-secret"
 
 const AuthService = {
-    getUserWithUserName(db,user_name){
-        return db('users')
-            .where({user_name})
+    getUserWithUserName(db,username){
+        return db('users').where({username})
             .first()
     },
     comparePasswords(password,hash) {
