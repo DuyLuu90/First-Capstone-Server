@@ -49,7 +49,14 @@ function loginValidation(req,res,next){
             return `Missing ${key} in request body`
     }
 */
-    
 }
+function reviewValidation(req,res,next) {
+    for (const field of ['movieId','userId','comment','rating']) {
+        if(!req.body[field]) {
+            return `${field} is required`
+        }
+    }
+}
+    
 
-module.exports= {userValidation,movieValidation,loginValidation}
+module.exports= {userValidation,movieValidation,loginValidation,reviewValidation}

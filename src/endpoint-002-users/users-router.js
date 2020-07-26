@@ -8,6 +8,7 @@ const UserRouter= express.Router()
 const UserService = require('./users-service')
 
 //MIDDLEWARE
+const {requireBasicAuth}= require('../middleware/require-auth')
 const {userValidation}= require('../middleware/form-validation')
 
 UserRouter
@@ -21,7 +22,7 @@ UserRouter
     .post('/',bodyParser,(req,res,next)=>{
         //userValidation(req,res,next)
         const errorMessage= userValidation(req,res,next)
-        console.log('Router',errorMessage)
+        //console.log('Router',errorMessage)
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})
         }
@@ -30,7 +31,7 @@ UserRouter
 
         UserService.hasUserWithUserName(req.app.get('db'),username)
         .then(hasUser=>{
-            console.log('form-validation',hasUser)
+            //console.log('form-validation',hasUser)
             if(hasUser) return res.status(400).json({error:`Username already taken`})
             UserService.hashPassword(password)
             .then(hashedPassword=>{
@@ -42,24 +43,25 @@ UserRouter
                     })
         })
         })
-        .catch(next)
-
-    /*
-        return UserService.insertUser(req.app.get('db'),newUser)
-        .then(user=>{
-            res.status(201)
-            .location(path.posix.join(req.originalUrl,`/${user.id}`))
-            .json(user) 
-        })
-        .catch(next)
-    */   
-        
-        
+        .catch(next)       
     })
 
-UserRouter.route('/:UserId')
+UserRouter.route('/:userId')
+    .all(requireBasicAuth)
+    .all((req,res,next)=>{
+        const {userId}= req.params
+        UserService.getUserById(req.app.get('db'),userId)
+            .then(user=>{
+                if(!user) return res.status(400).json({error:{
+                    message: 'User not found'
+                }})
+                res.user= user
+                next()
+            })
+            .catch(next)
+    })
     .get((req,res,next)=>{
-            
+        res.json(res.user)
     })
 /*
 async function checkUserExists(req,res,next) {

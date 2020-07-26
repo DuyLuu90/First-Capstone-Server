@@ -7,7 +7,7 @@ const {isWebUrl}= require('valid-url')
 
 
 const MovieService= require('./movies-service')
-const movieRouter= express.Router()
+const MovieRouter= express.Router()
 
 //MIDDLEWARE:
 const {requireBasicAuth}= require('../middleware/require-auth')
@@ -25,7 +25,7 @@ const sanitizedMovie= movie=>({
     last_modified: movie.last_modified,
 })
 
-movieRouter.route('/')
+MovieRouter.route('/')
     .all(requireBasicAuth)
     .get((req,res,next)=>{
         MovieService.getAllMovies(req.app.get('db'))
@@ -45,22 +45,9 @@ movieRouter.route('/')
             })
         
     })
-movieRouter.route('/:movieId')
+MovieRouter.route('/:movieId')
     .all(requireBasicAuth)
-    .all((req,res,next)=>{
-        const {movieId}= req.params
-        MovieService.getMovieById(req.app.get('db'),movieId)
-            .then(movie=>{
-                if(!movie) {
-                    return res.status(404).json({error:{
-                        message: `Movie not found`
-                    }})
-                }
-                res.movie=movie
-                next()
-            })
-            .catch(next)
-    })
+    .all(checkMovieExists)
     .get((req,res)=>{
         res.json(sanitizedMovie(res.movie))
     })
@@ -86,7 +73,16 @@ movieRouter.route('/:movieId')
         .catch(next)
     })
 
-movieRouter.route('/genres/:genres')
+MovieRouter.route('/:movieId/reviews')
+    .all(requireBasicAuth)
+    .all(checkMovieExists)
+    .get((req,res,next)=>{
+        MovieService.getReviewsForMovie(req.app.get('db'),req.params.movieId)
+        .then(reviews=>res.status(200).json(reviews))
+        .catch(next)
+    })
+
+MovieRouter.route('/genres/:genres')
     .all(requireBasicAuth)
     .get((req,res,next)=>{
         const {genres}= req.params
@@ -103,5 +99,18 @@ movieRouter.route('/genres/:genres')
             .catch(next)
     })
 
+async function checkMovieExists(req, res, next) {
+    try {
+        const movie = await MovieService.getMovieById(req.app.get('db'),req.params.movieId)
+        if (!movie) {
+        return res.status(404).json({error: `Movie doesn't exist`})
+        }
+        res.movie = movie
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
 
-module.exports= movieRouter
+
+module.exports= MovieRouter

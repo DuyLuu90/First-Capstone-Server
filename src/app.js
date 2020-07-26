@@ -5,9 +5,10 @@ const cors = require('cors')
 const helmet= require('helmet')
 const {NODE_ENV,CLIENT_ORIGIN}= require('./config')
 
-const movieRouter= require('./endpoint-001-movies/movies-router')
-const userRouter= require('./endpoint-002-users/users-router')
-const authRouter= require('./endpoint-003-auth/auth-router')
+const MovieRouter= require('./endpoint-001-movies/movies-router')
+const UserRouter= require('./endpoint-002-users/users-router')
+const AuthRouter= require('./endpoint-003-auth/auth-router')
+const ReviewRouter= require('./endpoint-004-reviews/review-router')
 
 const app= express()
 
@@ -22,9 +23,10 @@ app.use(cors({
 }))
 app.use(helmet())
 
-app.use('/api/movies',movieRouter)
-app.use('/api/users',userRouter)
-app.use('/api/auth',authRouter)
+app.use('/api/movies',MovieRouter)
+app.use('/api/users',UserRouter)
+app.use('/api/auth',AuthRouter)
+app.use('/api/reviews',ReviewRouter)
 
 
 //error handler middleware

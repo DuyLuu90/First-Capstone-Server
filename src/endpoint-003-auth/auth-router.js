@@ -1,16 +1,16 @@
 const express= require('express')
 const bodyParser= express.json()
 
-const authRouter= express.Router()
+const AuthRouter= express.Router()
 const AuthService= require('./auth-service')
 
 //MIDDLEWARE:
 const {loginValidation}= require('../middleware/form-validation')
 
-authRouter
+AuthRouter
     .post('/login',bodyParser,(req,res,next)=>{
         const {username,password}= req.body
-        const loginUser= {username,password}
+        //const loginUser= {username,password}
 
         const errorMessage= loginValidation(req,res,next)
         if (errorMessage) {
@@ -26,7 +26,7 @@ authRouter
                         return res.status(400).json({error:`Incorrect username or password`})
                     }
                     const sub= dbUser.username
-                    const payload={user_id: dbUser.id}
+                    const payload={userid: dbUser.id}
                     return res.send({
                         authToken: AuthService.createJwt(sub,payload)
                     })
@@ -36,4 +36,4 @@ authRouter
         .catch(next)
     })
 
-module.exports= authRouter
+module.exports= AuthRouter
