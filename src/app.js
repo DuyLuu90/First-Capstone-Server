@@ -9,6 +9,7 @@ const MovieRouter= require('./endpoint-001-movies/movies-router')
 const UserRouter= require('./endpoint-002-users/users-router')
 const AuthRouter= require('./endpoint-003-auth/auth-router')
 const ReviewRouter= require('./endpoint-004-reviews/review-router')
+const ArtistRouter= require('./endpoint-005-artists/artists-router')
 
 const app= express()
 
@@ -27,6 +28,7 @@ app.use('/api/movies',MovieRouter)
 app.use('/api/users',UserRouter)
 app.use('/api/auth',AuthRouter)
 app.use('/api/reviews',ReviewRouter)
+app.use('/api/artists',ArtistRouter)
 
 
 //error handler middleware

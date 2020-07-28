@@ -59,7 +59,7 @@ describe('MOVIE ENDPOINT',()=>{
                     return method.http(`${path}/${invalidId}`)
                     .set('Authorization',`Basic ${process.env.API_TOKEN}`)
                     .expect(404,{error:{
-                        message: `Movie not found`
+                        message: `Requested item doesn't exist`
                     }})
                 })
             })

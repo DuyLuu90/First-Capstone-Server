@@ -5,35 +5,15 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 const validLetters=/^[A-Za-z ]+$/
 
 const UserService= {
-    getAllUsers(db) {
-        return db('users').select('*')
-    },
+    
     getBlockedUsers(db){
         return db('users').where(block_list='true')
     },
-    getUserById(db,id) {
-        return db('users').where({id}).first()
-    },
-    insertUser(db,newUser){
-        return db.insert(newUser).into('users')
-            .returning('*').then(([user])=>user)
-    },
-    deleteUser(db,id){
-        return db('users').where({id}).delete()
-    },
-    updateUser(db,id,fieldsToUpdate){
-        return db('users').where({id}).update(fieldsToUpdate)
-    },
     hasUserWithUserName(db,username){
-        /*
-        return db('users').select('*')
-        .then(users=>users.find(user=>user.username===username))
-        */
         return db('users').where({username})
             .first()
             .then(user=>!!user)
     },
-    
     validateName(firstName,lastName){
         const fullName=firstName+lastName
         if (!validLetters.test(fullName)) {

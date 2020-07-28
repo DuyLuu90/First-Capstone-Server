@@ -1,20 +1,17 @@
-const xss= require('xss')
-const Treeize = require('treeize')
-//const Knex = require('knex')
-
+//const xss= require('xss')
+//const Treeize = require('treeize')
 
 const MovieService = {
-    getAllMovies(db) {
-        return db('movies').select('*')
-    },
     getMovieByGenres(db,genres){
         return db('movies').select('*').then(movies=>{
             return movies.filter(movie=>movie.genres.includes(genres))
         })   
     },
-    getMovieById(db,id){
-        return db('movies').where({id}).first()
+    getMovieByCountry(db,country){
+        return db('movies').select('*').where('movies.country',country)
+        .orderBy('movies.year','desc')
     },
+    
     getReviewsForMovie(db,movieid){
         return db
         .from('reviews AS rev')
@@ -25,17 +22,24 @@ const MovieService = {
         .leftJoin('users AS usr','rev.userid','usr.id',)
         .groupBy('rev.id', 'usr.id')
     },
-
-    insertMovie(db,newMovie){
-        return db.insert(newMovie).into('movies')
-            .returing('*').then(rows=>rows[0])
+    getMovieCast(db,movieid){
+        return db.from(`movie_cast AS cast`)
+        .select('cast.id',...artistFields)
+        .where('cast.movieid',movieid)
+        .innerJoin('artists AS ar',function(){
+            this
+                .on('cast.actor_one','ar.id')
+                .orOn('cast.actor_two','ar.id')
+        }) 
     },
-    deleteMovie(db,id){
-        return db('movies').where({id}).delete()
+    getMovieDirector(db,movieid){
+        return db.from(`movie_cast AS cast`)
+        .select('cast.id',...artistFields)
+        .where('cast.movieid',movieid)
+        .innerJoin('artists AS ar',function(){
+            this.on('cast.director','ar.id')
+        }) 
     },
-    updateMovie(db,id,fieldsToUpdate){
-        return db('movies').where({id}).update(fieldsToUpdate)
-    }
 }
 
 const userFields = [
@@ -43,6 +47,10 @@ const userFields = [
     'usr.username AS user:username',
     'usr.first_name AS user:first_name',
     'usr.last_name AS user:last_name',
+]
+const artistFields=[
+    'ar.id AS artist:id',
+    'ar.full_name AS full_name'
 ]
 
 module.exports= MovieService

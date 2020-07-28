@@ -6,23 +6,22 @@ const bodyParser= express.json()
 
 const UserRouter= express.Router()
 const UserService = require('./users-service')
+const {GeneralService}= require('../service/api-service')
 
 //MIDDLEWARE
 const {requireBasicAuth}= require('../middleware/require-auth')
 const {userValidation}= require('../middleware/form-validation')
+const {checkItemExists}= require('../middleware/general-validation')
 
 UserRouter
+    .all(requireBasicAuth)
     .get('/',(req,res,next)=>{
-        UserService.getAllUsers(req.app.get('db'))
-        .then(users=>{
-            res.status(200).json(users)
-        })
+        GeneralService.getAllItems(req.app.get('db'),'users')
+        .then(users=>res.status(200).json(users))
         .catch(next)
     })
     .post('/',bodyParser,(req,res,next)=>{
-        //userValidation(req,res,next)
         const errorMessage= userValidation(req,res,next)
-        //console.log('Router',errorMessage)
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})
         }
@@ -31,11 +30,10 @@ UserRouter
 
         UserService.hasUserWithUserName(req.app.get('db'),username)
         .then(hasUser=>{
-            //console.log('form-validation',hasUser)
             if(hasUser) return res.status(400).json({error:`Username already taken`})
             UserService.hashPassword(password)
             .then(hashedPassword=>{
-                return UserService.insertUser(req.app.get('db'),{...newUser,password:hashedPassword})
+                return GeneralService.insertItem(req.app.get('db'),'users',{...newUser,password:hashedPassword})
                     .then(user=>{
                         res.status(201)
                         .location(path.posix.join(req.originalUrl,`/${user.id}`))
@@ -46,39 +44,11 @@ UserRouter
         .catch(next)       
     })
 
-UserRouter.route('/:userId')
+UserRouter.route('/:id')
     .all(requireBasicAuth)
-    .all((req,res,next)=>{
-        const {userId}= req.params
-        UserService.getUserById(req.app.get('db'),userId)
-            .then(user=>{
-                if(!user) return res.status(400).json({error:{
-                    message: 'User not found'
-                }})
-                res.user= user
-                next()
-            })
-            .catch(next)
-    })
+    .all((req,res,next)=>checkItemExists(req,res,next,'users'))
     .get((req,res,next)=>{
-        res.json(res.user)
+        res.json(res.item)
     })
-/*
-async function checkUserExists(req,res,next) {
-    try {
-        const User= await UserService.getUserById(
-            req.app.get('db'),
-            req.params.UserId
-        )
-        if (!User) return res.status(400).json({
-            error: `User doesn't exist`
-        })
-        res.User= User
-        next()
-    }
-    catch(error) {
-        next(error)
-    }
-}*/
 
 module.exports= UserRouter

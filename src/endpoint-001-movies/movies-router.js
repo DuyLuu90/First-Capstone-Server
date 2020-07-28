@@ -5,13 +5,14 @@ const bodyParser= express.json()
 const path= require('path')
 const {isWebUrl}= require('valid-url')
 
-
+const {GeneralService}= require('../service/api-service')
 const MovieService= require('./movies-service')
 const MovieRouter= express.Router()
 
 //MIDDLEWARE:
 const {requireBasicAuth}= require('../middleware/require-auth')
 const {movieValidation}= require('../middleware/form-validation')
+const {checkItemExists}= require('../middleware/general-validation')
 
 const sanitizedMovie= movie=>({
     id: movie.id,
@@ -28,7 +29,7 @@ const sanitizedMovie= movie=>({
 MovieRouter.route('/')
     .all(requireBasicAuth)
     .get((req,res,next)=>{
-        MovieService.getAllMovies(req.app.get('db'))
+        GeneralService.getAllItems(req.app.get('db'),'movies')
             .then(movies=>{
                 return res.status(200).json(movies)
             })
@@ -37,7 +38,7 @@ MovieRouter.route('/')
     .post(bodyParser,(req,res,next)=>{
         movieValidation(req,res,next)
         const newMovie= {title,posterUrl,trailerUrl,summary,year,country,genres}
-        MovieService.insertMovie(req.app.get('db'),newMovie)
+        GeneralService.insertItem(req.app.get('db'),'movies',newMovie)
             .then(movie=>{
                 res.status(201)
                 .location(path.poxis.join(req.originalUrl,`/${movie.id}`))
@@ -45,15 +46,15 @@ MovieRouter.route('/')
             })
         
     })
-MovieRouter.route('/:movieId')
+MovieRouter.route('/:id')
     .all(requireBasicAuth)
-    .all(checkMovieExists)
+    .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
     .get((req,res)=>{
-        res.json(sanitizedMovie(res.movie))
+        res.json(sanitizedMovie(res.item))
     })
     .delete((req,res,next)=>{
         const {id}=req.params
-        MovieService.deleteMovie(req.app.get('db'),id)
+        GeneralService.deleteItem(req.app.get('db'),'movies',id)
         .then(()=>res.status(204).end())
         .catch(next)
     })
@@ -68,16 +69,33 @@ MovieRouter.route('/:movieId')
                 message: `Req body does not contain any field to update`
             }})
         }
-        MovieService.updateMovie(knex, req.params.id, movieToUpdate)
+        GeneralService.updateItem(knex,'movies',req.params.id, movieToUpdate)
         .then(()=>res.status(204).end())
         .catch(next)
     })
 
-MovieRouter.route('/:movieId/reviews')
+MovieRouter.route('/:id/cast')
     .all(requireBasicAuth)
-    .all(checkMovieExists)
+    .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
     .get((req,res,next)=>{
-        MovieService.getReviewsForMovie(req.app.get('db'),req.params.movieId)
+        MovieService.getMovieCast(req.app.get('db'),req.params.id)
+        .then(cast=>res.status(200).json(cast))
+        .catch(next)
+    })
+MovieRouter.route('/:id/director')
+    .all(requireBasicAuth)
+    .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
+    .get((req,res,next)=>{
+        MovieService.getMovieDirector(req.app.get('db'),req.params.id)
+        .then(director=>res.status(200).json(director))
+        .catch(next)
+})
+
+MovieRouter.route('/:id/reviews')
+    .all(requireBasicAuth)
+    .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
+    .get((req,res,next)=>{
+        MovieService.getReviewsForMovie(req.app.get('db'),req.params.id)
         .then(reviews=>res.status(200).json(reviews))
         .catch(next)
     })
@@ -98,19 +116,22 @@ MovieRouter.route('/genres/:genres')
             })
             .catch(next)
     })
-
-async function checkMovieExists(req, res, next) {
-    try {
-        const movie = await MovieService.getMovieById(req.app.get('db'),req.params.movieId)
-        if (!movie) {
-        return res.status(404).json({error: `Movie doesn't exist`})
-        }
-        res.movie = movie
-        next()
-    } catch (error) {
-        next(error)
-    }
-}
+    MovieRouter.route('/country/:country')
+    .all(requireBasicAuth)
+    .get((req,res,next)=>{
+        const {country}= req.params
+        MovieService.getMovieByCountry(req.app.get('db'),country)
+            .then(movies=>{
+                if(movies.length===0) {
+                    return res.status(404).json({error:{
+                        message:`Movie not found`
+                    }})
+                }
+                res.status(200).json(movies)
+                next()
+            })
+            .catch(next)
+    })
 
 
 module.exports= MovieRouter

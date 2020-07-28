@@ -8,11 +8,13 @@ const ReviewRouter= express.Router()
 const ReviewService = require('./review-service')
 
 //middleware
+const {requireBasicAuth}= require('../middleware/require-auth')
 
 ReviewRouter
+    .all(requireBasicAuth)
     .post('/',bodyParser,(req,res,next)=>{
-        const {movieId,comment,userId,rating}= req.body
-        const newReview= {movieId,comment,userId,rating}
+        const {movieid,comment,userid,rating}= req.body
+        const newReview= {movieid,comment,userid,rating}
 
         ReviewService.insertReview(req.app.get('db'),newReview)
             .then(review=>{
@@ -24,6 +26,7 @@ ReviewRouter
     })
 
 ReviewRouter
+    .all(requireBasicAuth)
     .post('/:reviewId',bodyParser,(req,res,next)=>{
         const {upvote,downvote,reply,report}= req.body
         const reviewAction= {upvote,downvote,comment,report}

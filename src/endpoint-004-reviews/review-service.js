@@ -4,12 +4,7 @@ const ReviewService = {
   getById(db, id) {
     return db
       .from('reviews AS rev')
-      .select(
-        'rev.id',
-        'rev.rating',
-        'rev.comment',
-        'rev.date_submitted',
-        'rev.movieId',
+      .select('rev.id','rev.rating','rev.comment','rev.date_submitted','rev.movieid',
         db.raw(
           `row_to_json(
             (SELECT tmp FROM (
@@ -17,16 +12,12 @@ const ReviewService = {
                 usr.id,
                 usr.username,
                 usr.first_name,
-                user.last_name
+                usr.last_name
             ) tmp)
           ) AS "user"`
         )
       )
-      .leftJoin(
-        'users AS usr',
-        'rev.userId',
-        'usr.id',
-      )
+      .leftJoin('users AS usr','rev.userid','usr.id',)
       .where('rev.id', id)
       .first()
   },
@@ -38,7 +29,7 @@ const ReviewService = {
       .returning('*')
       .then(([review]) => review)
       .then(review =>
-        ReviewsService.getById(db, review.id)
+        ReviewService.getById(db, review.id)
       )
   },
 

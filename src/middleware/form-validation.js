@@ -12,18 +12,7 @@ function userValidation(req,res,next){
     if (nameError) return nameError
     
     let passwordError= UserService.validatePassword(password)
-    if (passwordError) return passwordError
-
-    /*
-    UserService.hasUserWithUserName(req.app.get('db'),username)
-        .then(hasUser=>{
-            //console.log('form-validation',hasUser)
-            if(hasUser) return `Username already taken`
-            
-        })
-        .catch(next)
-    */
-    
+    if (passwordError) return passwordError    
     
 }
 function movieValidation(req,res,next){
