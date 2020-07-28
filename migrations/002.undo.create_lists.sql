@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS drama_list;
+DROP TABLE IF EXISTS film_list;
+DROP TABLE IF EXISTS trending_list;

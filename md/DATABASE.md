@@ -1,3 +1,19 @@
+# KNEX METHODS:
+    Search item:
+        db('').select('').where('','ILIKE',`%${searchTerm}%`)
+        db('').select('').whereNotNull('column')
+    Paginating items:
+        const offset= itemsPerPage*(page-1)
+        db('').select('').limit(itemsPerPage).offset(offset)
+    Sort items:
+        (now()-'30 days'::INTERVAL)
+        GROUP BY
+        ORDER BY 'column' ASC, 'column' DESC;
+    ADD ENUM type
+        CREATE TYPE .TYPE.. AS ENUM ('..','..');
+        ALTER TABLE ... ADD COLUMN ... style ...
+
+
 # LEARNING A NEW CODEBASE:
     async vs await:
         async: contain 0 or more <await> expression
