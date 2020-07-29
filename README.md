@@ -1,6 +1,6 @@
-# Express Boilerplate!
+# Dramapedia
 
-This is a boilerplate project used for starting new projects!
+This is my first full stack Capstone
 
 ## Set up
 
