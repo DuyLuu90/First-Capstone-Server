@@ -38,11 +38,9 @@ UserRouter
                         res.status(201)
                         .location(path.posix.join(req.originalUrl,`/${user.id}`))
                         .json(user) 
-                    })
-                    
-        })
-        })
-        .catch(next)       
+                    })          
+            })
+        }).catch(next)       
     })
 
 UserRouter.route('/:id')
@@ -50,6 +48,22 @@ UserRouter.route('/:id')
     .all((req,res,next)=>checkItemExists(req,res,next,'users'))
     .get((req,res,next)=>{
         res.json(res.item)
+    })
+    .patch(bodyParser,(req,res,next)=>{
+        const {first_name,last_name,username,password,gender,country}= req.body
+        const userToUpdate= {first_name,last_name,username,password,gender,country,last_modified: new Date()}
+
+        if (!password) return GeneralService.updateItem(req.app.get('db'),'users',req.params.id,userToUpdate)
+        .then(()=>res.status(204).end()).catch(next)
+
+        else {
+            UserService.hashPassword(password)
+            .then(hashedPassword=>{
+                const updatedUser= {...userToUpdate,password: hashedPassword}
+                return GeneralService.updateItem(req.app.get('db'),'users',req.params.id,updatedUser)
+                .then(()=>res.status(204).end())})
+            .catch(next)
+        } 
     })
 
 module.exports= UserRouter
