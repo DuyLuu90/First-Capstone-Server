@@ -3,9 +3,10 @@ const helpers= require('./test-helpers')
 const app= require('../src/app')
 //const supertest = require('supertest')
 
-describe('MOVIE ENDPOINT',()=>{
-    //const {testMovies,testUsers,testReviews} = helpers.makeTestData()
-    const testMovies= helpers.makeMoviesArray()
+describe.only('MOVIE ENDPOINT',()=>{
+    const {testMovies,testUsers,testReviews} = helpers.makeTestData()
+    //const testMovies= helpers.makeMoviesArray()
+    
     let db;
     before('makeAuthHeader knex instance', () => {
         db = knex({
@@ -13,11 +14,11 @@ describe('MOVIE ENDPOINT',()=>{
           connection: process.env.TEST_DATABASE_URL,
         })
         app.set('db', db)
-      })
+    })
     
-      after('disconnect from db', () => db.destroy())
-      before('cleanup', () => helpers.cleanTables(db))
-      afterEach('cleanup', () => helpers.cleanTables(db))
+    after('disconnect from db', () => db.destroy())
+    before('cleanup', () => helpers.cleanTables(db))
+    afterEach('cleanup', () => helpers.cleanTables(db))
 
     describe('ENDPOINT /api/movies',()=>{
         context('Given no movies',()=>{
@@ -42,8 +43,7 @@ describe('MOVIE ENDPOINT',()=>{
         })
     })
     describe('ENDPOINT /api/movies/:movieId',()=>{
-        beforeEach('Insert movies',()=>
-                db('movies').insert(testMovies))
+        beforeEach('Insert movies',()=>db('movies').insert(testMovies))
         const path='/api/movies'
         const validId= 2
         const invalidId= 123456
@@ -65,10 +65,22 @@ describe('MOVIE ENDPOINT',()=>{
             })
         })
         context('Given movie does exist',()=>{
-            it('GET movie',()=>{
+            it('GET movie details',()=>{
                 return supertest(app).get(`/api/movies/${validId}`)
                 .set('Authorization',`Basic ${process.env.API_TOKEN}`)
                 .expect(200,expectedMovie)
+            })
+            it.only('GET movie review',()=>{
+                const expectedMovieReviews= helpers.makeExpectedMovieReviews(testUsers,testReviews,validId)
+                return supertest(app).get(`/api/movies/${validId}/reviews`)
+                .set('Authorization',`Basic ${process.env.API_TOKEN}`)
+                .expect(200,expectedMovieReviews)
+            })
+            it.skip('GET movie cast',()=>{
+
+            })
+            it.skip('GET movie director',()=>{
+
             })
             it.skip('DELETE movie',()=>{
                 const expectedMovie= testMovies.filter(movie=>movie.id!==validId)
@@ -95,9 +107,8 @@ describe('MOVIE ENDPOINT',()=>{
             })
         })
     })
-    describe('ENDPOINT /api/movies/genres/:genres',()=>{
-        beforeEach('Insert movies',()=>
-                db('movies').insert(testMovies))
+    describe.skip('ENDPOINT /api/movies/genres/:genres',()=>{
+        beforeEach('Insert movies',()=>db('movies').insert(testMovies))
         const path='/api/movies/genres'
         const validGenres= 'Film'
         const invalidGenres= 'Invalid'

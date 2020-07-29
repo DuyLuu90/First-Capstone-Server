@@ -4,7 +4,7 @@ const app= require('../src/app')
 
 //const supertest = require('supertest')
 
-describe('USERS ENDPOINT',()=>{
+describe.skip('USERS ENDPOINT',()=>{
     //const {testMovies,testUsers,testReviews} = helpers.makeTestData()
     const testUsers= helpers.makeUsersArray()
     const testUser= testUsers[0]

@@ -2,6 +2,7 @@ const knex= require('knex')
 const helpers= require('./test-helpers')
 const app= require('../src/app')
 
+
 describe('FORM VALIDATION',()=>{
     const testUsers= helpers.makeUsersArray()
     const testUser= testUsers[0]
@@ -18,7 +19,7 @@ describe('FORM VALIDATION',()=>{
     afterEach('cleanup', () => helpers.cleanTables(db))
     after('disconnect from db', () => db.destroy())
 
-    context.only('POST /api/users',()=>{
+    context('POST /api/users',()=>{
         beforeEach('Insert users',()=>{
             //db.into('users').insert(testUsers)
             helpers.seedUsers(db,testUsers)

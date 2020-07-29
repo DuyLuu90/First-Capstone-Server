@@ -2,132 +2,119 @@ const bcrypt= require('bcryptjs')
 
 function makeMoviesArray(){
     return [
-        {
-          id: 1,
-          title: 'First test movie!',
-          posterurl: 'http://placehold.it/500x500',
-          trailerurl: 'http://placehold.it/500x500',
-          country: 'United States',
-          genres: ['Action'],
-          year: 2020,
-          last_modified: '2029-01-22T16:28:32.615Z',
-          summary: 'test movie summary',
-        },
-        {
-          id: 2,
-          title: 'Second test movie!',
-          posterurl: 'http://placehold.it/500x500',
-          trailerurl: 'http://placehold.it/500x500',
-          country: 'United States',
-          genres: ['TV Series'],
-          year: 2020,
-          last_modified: '2029-01-22T16:28:32.615Z',
-          summary: 'test movie summary',
-        },
-        {
-          id: 3,
-          title: 'Third test movie!',
-          posterurl: 'http://placehold.it/500x500',
-          trailerurl: 'http://placehold.it/500x500',
-          country: 'United States',
-          genres: ['Film'],
-          year: 2020,
-          last_modified: '2029-01-22T16:28:32.615Z',
-          summary: 'test movie summary',
-        },
-        {
-          id: 4,
-          title: 'Fourth test movie!',
-          posterurl: 'http://placehold.it/500x500',
-          trailerurl: 'http://placehold.it/500x500',
-          country: 'United States',
-          genres: ['Action'],
-          year: 2020,
-          last_modified: '2029-01-22T16:28:32.615Z',
-          summary: 'test movie summary',
-        },
-      ]
+        {   id: 1,
+            title: 'First test movie!',
+            posterurl: 'http://placehold.it/500x500',
+            trailerurl: 'http://placehold.it/500x500',
+            country: 'US',genres: ['Action'], year: 2020,
+            last_modified: '2029-01-22T16:28:32.615Z',
+            summary: 'test movie summary'  },
+
+        {   id: 2,
+            title: 'Second test movie!',
+            posterurl: 'http://placehold.it/500x500',
+            trailerurl: 'http://placehold.it/500x500',
+            country: 'US',genres: ['TV Series'],year: 2020,
+            last_modified: '2029-01-22T16:28:32.615Z',
+            summary: 'test movie summary'  },
+
+        {   id: 3,
+            title: 'Third test movie!',
+            posterurl: 'http://placehold.it/500x500',
+            trailerurl: 'http://placehold.it/500x500',
+            country: 'US',genres: ['Film'], year: 2020,
+            last_modified: '2029-01-22T16:28:32.615Z',
+            summary: 'test movie summary' },
+          
+        {   id: 4,
+            title: 'Fourth test movie!',
+            posterurl: 'http://placehold.it/500x500',
+            trailerurl: 'http://placehold.it/500x500',
+            country: 'US',genres: ['Action'],year: 2020,
+            last_modified: '2029-01-22T16:28:32.615Z',
+            summary: 'test movie summary'   },
+    ]
 }
 
 function makeUsersArray(){
     return [
-        {
-            id: 1,
-            first_name:'firstName' ,
-            last_name:'lastName' ,
-            username:'testusername1' ,
-            password: 'testPassword1' ,
-            age: 18 ,
-            country:'United States' ,
-            nickname: 'nickname' ,
-            gender: 'Male' ,
+        {   id: 1,
+            first_name:'firstName',last_name:'lastName' ,
+            username:'testusername1',password: 'testPassword1' ,
+            age: 18 ,country:'US',gender: 'Male' ,
             block_list: false,
-            last_modified: '2029-01-22T16:28:32.615Z'
-        },
-        {
-            id: 2,
-            first_name:'firstName' ,
-            last_name:'lastName' ,
-            username:'userName2' ,
-            password: 'testPassword2' ,
-            age: 18 ,
-            country:'Japan' ,
-            nickname: 'nickname' ,
-            gender: 'Female' ,
+            last_modified: '2029-01-22T16:28:32.615Z'    },
+
+        {   id: 2,
+            first_name:'firstName',last_name:'lastName' ,
+            username:'userName2' ,password: 'testPassword2' ,
+            age: 18 ,country:'JP' ,gender: 'Female' ,
             block_list: false,
-            last_modified: '2029-01-22T16:28:32.615Z'
-        },
-        {
-            id: 3,
-            first_name:'firstName' ,
-            last_name:'lastName' ,
-            username:'userName3' ,
-            password: 'testPassword3' ,
-            age: 18 ,
-            country:'United States' ,
-            nickname: 'nickname' ,
-            gender: 'Male' ,
+            last_modified: '2029-01-22T16:28:32.615Z'  },
+
+        {   id: 3,
+            first_name:'firstName' ,last_name:'lastName' ,
+            username:'userName3' ,password: 'testPassword3' ,
+            age: 18 ,country:'VN' ,gender: 'Male' ,
             block_list: false,
-            last_modified: '2029-01-22T16:28:32.615Z'
-        },
+            last_modified: '2029-01-22T16:28:32.615Z'   },
     ]
 }
-/*
+
 function makeReviewsArray(movies=[],users=[]){
     return [
-        {
-            id:1,
-            movieId: movies[0].id,
-            userId: users[0].id,
+        {   id:1,
+            movieid: movies[0].id,
+            userid: users[0].id,
             comment: 'test comment',
             rating:3,upvote:3,downvote:3,
-            date_submitted: '2029-01-22T16:28:32.615Z',
-        },
-        {
-            id:2,
-            movieId: movies[1].id,
-            userId: users[1].id,
+            date_submitted: '2029-01-22T16:28:32.615Z', },
+
+        {   id:2,
+            movieid: movies[1].id,
+            userid: users[1].id,
             comment: 'test comment',
             rating:3,upvote:3,downvote:3,
-            date_submitted: '2029-01-22T16:28:32.615Z',
-        },
-        {
-            id:3,
-            movieId: movies[2].id,
-            userId: users[2].id,
+            date_submitted: '2029-01-22T16:28:32.615Z', },
+
+        {   id:3,
+            movieid: movies[2].id,
+            userid: users[2].id,
             comment: 'test comment',
             rating:3,upvote:3,downvote:3,
-            date_submitted: '2029-01-22T16:28:32.615Z',
-        }
+            date_submitted: '2029-01-22T16:28:32.615Z',  }
     ]
+}
+
+function calculateAvgReviewRating(reviews){
+    if(!reviews.length) return 0
+    const sum= reviews.map(review=>review.rating).reduce((a,b)=>a+b)
+    return Math.round(sum/reviews.length)
+}
+
+function makeExpectedMovieReviews(users,reviews,movieid,){
+    const expectedREviews= reviews.filter(review=>review.movieid===movieid)
+    return expectedREviews.map(review=>{
+        const reviewUser= users.find(user=>user.id===review.userid)
+        return {
+            id: review.id,
+            rating: review.rating,
+            comment: review.comment,
+            date_submitted: review.date_submitted,
+            'user:id' : reviewUser.id,
+            'user:username': reviewUser.username,
+            'user:first_name': reviewUser.first_name,
+            'user:last_name': reviewUser.last_name,
+        }
+    })
 }
 
 function makeTestData(){
     const testMovies= makeMoviesArray()
     const testUsers= makeUsersArray()
     const testReviews= makeReviewsArray()
-    return (testMovies,testUsers,testReviews)
-}*/
+    return {testMovies,testUsers,testReviews}
+}
 
 function seedUsers(db,users) {
     const preppedUsers= users.map(user=>({
@@ -156,7 +143,7 @@ function cleanTables(db) {
             reviews,
             movies,
             users
-        RESTART IDENTITY CASCADE`
+        RESTART idENTITY CASCADE`
     )
 }
 
@@ -170,8 +157,12 @@ function makeAuthHeader(user) {
 module.exports= {
     makeMoviesArray,
     makeUsersArray,
+    makeReviewsArray,
+    calculateAvgReviewRating,
+    makeExpectedMovieReviews,
+
     seedUsers,
-    //makeTestData,
+    makeTestData,
     seedMoviesTables,
     cleanTables,
     makeAuthHeader

@@ -2,7 +2,7 @@ const knex= require('knex')
 const helpers= require('./test-helpers')
 const app= require('../src/app')
 
-describe.skip('AUTHENTICATION AND AUTHORIZATION',()=>{
+describe('AUTHENTICATION AND AUTHORIZATION',()=>{
     const testUsers= helpers.makeUsersArray()
     const testUser= testUsers[0]
     let db;
