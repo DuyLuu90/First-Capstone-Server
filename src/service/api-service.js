@@ -13,7 +13,7 @@ const GeneralService={
     },
     insertItem(db,dbName,newItem){
         return db.insert(newItem).into(dbName)
-            .returing('*').then(rows=>rows[0])
+            .returning('*').then(rows=>rows[0])
     },
     deleteItem(db,dbName,id){
         return db(dbName).where({id}).delete()

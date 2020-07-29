@@ -25,8 +25,8 @@ UserRouter
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})
         }
-        const {first_name,last_name,username,password,nickname,age,gender,country}= req.body
-        const newUser= {first_name,last_name,username,password,nickname,age,gender,country}
+        const {first_name,last_name,username,password,age,gender,country}= req.body
+        const newUser= {first_name,last_name,username,password,age,gender,country}
 
         UserService.hasUserWithUserName(req.app.get('db'),username)
         .then(hasUser=>{
@@ -39,6 +39,7 @@ UserRouter
                         .location(path.posix.join(req.originalUrl,`/${user.id}`))
                         .json(user) 
                     })
+                    
         })
         })
         .catch(next)       

@@ -5,6 +5,12 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 const validLetters=/^[A-Za-z ]+$/
 
 const UserService= {
+    insertNewUser(db,newUser){
+        
+        return db.insert(newUser).into('users')
+            .returning('*').then(rows=>rows[0])
+        
+    },
     
     getBlockedUsers(db){
         return db('users').where(block_list='true')
