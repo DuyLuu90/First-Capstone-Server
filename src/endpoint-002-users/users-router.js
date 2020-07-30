@@ -49,6 +49,11 @@ UserRouter.route('/:id')
     .get((req,res,next)=>{
         res.json(res.item)
     })
+    .delete((req,res,next)=>{
+        GeneralService.deleteItem(req.app.get('db'),'users',req.params.id)
+        .then(()=>res.status(204).end())
+        .catch(next)
+    })
     .patch(bodyParser,(req,res,next)=>{
         const {first_name,last_name,username,password,gender,country}= req.body
         const userToUpdate= {first_name,last_name,username,password,gender,country,last_modified: new Date()}

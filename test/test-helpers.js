@@ -42,21 +42,21 @@ const makeTables= {
                 first_name:'firstName',last_name:'lastName' ,
                 username:'testusername1',password: 'testPassword1' ,
                 age: 18 ,country:'US',gender: 'Male' ,
-                block_list: false,
+                block_list: false, nickname: null,
                 last_modified: '2029-01-22T16:28:32.615Z'    },
     
             {   id: 2,
                 first_name:'firstName',last_name:'lastName' ,
                 username:'userName2' ,password: 'testPassword2' ,
                 age: 18 ,country:'JP' ,gender: 'Female' ,
-                block_list: false,
+                block_list: false, nickname: null,
                 last_modified: '2029-01-22T16:28:32.615Z'  },
     
             {   id: 3,
                 first_name:'firstName' ,last_name:'lastName' ,
                 username:'userName3' ,password: 'testPassword3' ,
                 age: 18 ,country:'VN' ,gender: 'Male' ,
-                block_list: false,
+                block_list: false, nickname: null,
                 last_modified: '2029-01-22T16:28:32.615Z'   },
         ]
     },
@@ -197,33 +197,15 @@ const tools={
     makeAuthHeader(user){
         const token = Buffer.from(`${user.user_name}:${user.password}`).toString(`base64`)
         return `Bearer ${token}`
+    },
+    makeNewUser(){
+        return {
+            first_name: "Alex", last_name: "Wang", 
+            username: "aw1990", password: "11AAaa!!",
+            age: 18, country: "CN", gender: "Male"
+        }
     }
 }
-/*
-function makeMoviesArray(){   
-}
-function makeUsersArray(){   
-}
-function makeArtistsArray(){  
-}
-function makeReviewsArray(movies=[],users=[]){  
-}
-function makeMovieCastArray(movies=[],ar=[]){
-}
-function makeExpectedMovieReviews(users,reviews,movieid,){
-}
-function makeExpectedMovieCast(artists,movieid,movie_cast=[]){ 
-}
-function makeTestData(){
-}
-function seedUsers(db,users) {
-}
-function seedMoviesTables(db,users=[],movies=[],reviews=[]){   
-}
-function cleanTables(db) { 
-}
-function calculateAvgReviewRating(reviews){   
-}
-*/
+
 
 module.exports= {makeTables,prepareTest,expected,tools}

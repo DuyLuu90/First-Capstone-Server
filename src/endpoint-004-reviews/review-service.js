@@ -1,6 +1,7 @@
 const xss = require('xss')
 
 const ReviewService = {
+/*
   getById(db, id) {
     return db
       .from('reviews AS rev')
@@ -42,7 +43,7 @@ const ReviewService = {
       date_created: review.date_created,
       user: review.user || {},
     }
-  }
+  }*/
 }
 
 module.exports = ReviewService

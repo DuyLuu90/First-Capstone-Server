@@ -29,6 +29,18 @@ ArtistRouter.route('/:id')
 .get((req,res)=>{
     res.json(res.item)
 })
+.delete((req,res,next)=>{
+    GeneralService.deleteItem(req.app.get('db'),'artists',req.params.id)
+    .then(()=>res.status(204).end())
+    .catch(next)
+})
+.patch(bodyParser,(req,res,next)=>{
+    const {full_name,title,avatar,birth_year,country}= req.body
+    const ArtistUpdate= {full_name,title,avatar,birth_year,country}
+    GeneralService.updateItem(req.app.get('db'),'artists',req.params.id,ArtistUpdate)
+    .then(()=>res.status(204).end())
+    .catch(next)
+})
 
 ArtistRouter.route('/:id/movies')
 .all(requireBasicAuth)

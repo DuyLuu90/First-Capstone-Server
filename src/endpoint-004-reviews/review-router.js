@@ -5,10 +5,12 @@ const xss= require('xss')
 const bodyParser= express.json()
 
 const ReviewRouter= express.Router()
-const ReviewService = require('./review-service')
+//const ReviewService = require('./review-service')
+const {GeneralService}= require('../service/api-service')
 
 //middleware
 const {requireBasicAuth}= require('../middleware/require-auth')
+const {checkItemExists}= require('../middleware/general-validation')
 
 ReviewRouter
     .all(requireBasicAuth)
@@ -16,7 +18,7 @@ ReviewRouter
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
 
-        ReviewService.insertReview(req.app.get('db'),newReview)
+        GeneralService.insertItem(req.app.get('db'),'reviews',newReview)
             .then(review=>{
                 res.status(201)
                 .location(path.posix.join(req.originalUrl,`/${review.id}`))
@@ -25,11 +27,24 @@ ReviewRouter
 
     })
 
-ReviewRouter
+ReviewRouter.route('/:id')
     .all(requireBasicAuth)
-    .post('/:reviewId',bodyParser,(req,res,next)=>{
-        const {upvote,downvote,reply,report}= req.body
-        const reviewAction= {upvote,downvote,comment,report}
+    .all((req,res,next)=>checkItemExists(req,res,next,'reviews'))
+    .get((req,res,next)=>{
+        res.json(res.item)
+    })
+    .delete((req,res,next)=>{
+        GeneralService.deleteItem(req.app.get('db'),'reviews',req.params.id)
+        .then(()=>res.status(204).end())
+        .catch(next)
+    })
+    .patch(bodyParser,(req,res,next)=>{
+        const {upvote,downvote,replies,report}= req.body
+        const reviewUpdate= {upvote,downvote,replies,report}
+
+        GeneralService.updateItem(req.app.get('db'),'reviews',req.params.id,reviewUpdate)
+        .then(()=>res.status(204).end())
+        .catch(next)
     })
 
 module.exports= ReviewRouter
