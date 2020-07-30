@@ -2,6 +2,8 @@ const knex= require('knex')
 const helpers= require('./test-helpers')
 const app= require('../src/app')
 
+/*
+
 describe('AUTHENTICATION AND AUTHORIZATION',()=>{
     const testUsers= helpers.makeUsersArray()
     const testUser= testUsers[0]
@@ -55,7 +57,7 @@ describe('AUTHENTICATION AND AUTHORIZATION',()=>{
             return endpoint.method(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
             .expect(401,{error:`Unauthorized request`});
-          })*/
+          })
       }) })
   })
 
@@ -69,4 +71,4 @@ describe('AUTHENTICATION AND AUTHORIZATION',()=>{
     })
 
     
-})
+})*/

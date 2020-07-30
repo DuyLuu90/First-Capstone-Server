@@ -3,7 +3,7 @@ const helpers= require('./test-helpers')
 const app= require('../src/app')
 
 //const supertest = require('supertest')
-
+/*
 describe.skip('USERS ENDPOINT',()=>{
     //const {testMovies,testUsers,testReviews} = helpers.makeTestData()
     const testUsers= helpers.makeUsersArray()
@@ -57,4 +57,4 @@ describe.skip('USERS ENDPOINT',()=>{
 
     })
 
-})
+})*/

@@ -1,11 +1,10 @@
 const knex= require('knex')
-const helpers= require('./test-helpers')
+const {prepareTest,expected} = require('./test-helpers')
 const app= require('../src/app')
-//const supertest = require('supertest')
 
-describe.only('MOVIE ENDPOINT',()=>{
-    const {testMovies,testUsers,testReviews} = helpers.makeTestData()
-    //const testMovies= helpers.makeMoviesArray()
+describe('MOVIE ENDPOINT',()=>{
+    const {testMovies,testUsers,testArtists,testReviews,testCasts}= prepareTest.getData()
+    const data= {testMovies,testUsers,testArtists,testReviews,testCasts}
     
     let db;
     before('makeAuthHeader knex instance', () => {
@@ -17,8 +16,8 @@ describe.only('MOVIE ENDPOINT',()=>{
     })
     
     after('disconnect from db', () => db.destroy())
-    before('cleanup', () => helpers.cleanTables(db))
-    afterEach('cleanup', () => helpers.cleanTables(db))
+    before('cleanup', () => prepareTest.cleanTables(db))
+    afterEach('cleanup', () => prepareTest.cleanTables(db))
 
     describe('ENDPOINT /api/movies',()=>{
         context('Given no movies',()=>{
@@ -29,9 +28,7 @@ describe.only('MOVIE ENDPOINT',()=>{
             })
         })
         context('GET all movies',()=>{
-            beforeEach('Insert movies',()=>
-                db('movies').insert(testMovies))
-                //helpers.seedMoviesTables(db,testUsers,testMovies,testReviews))
+            beforeEach('Insert movies',()=>prepareTest.seedTables(db,data))
             it('respond 200 with all movies',()=>{
                 return supertest(app).get('/api/movies')
                 .set('Authorization',`Basic ${process.env.API_TOKEN}`)
@@ -39,11 +36,11 @@ describe.only('MOVIE ENDPOINT',()=>{
             })
         })
         context.skip('POST a movie',()=>{
-
+            beforeEach('Insert movies',()=>prepareTest.seedTables(db,data))
         })
     })
     describe('ENDPOINT /api/movies/:movieId',()=>{
-        beforeEach('Insert movies',()=>db('movies').insert(testMovies))
+        beforeEach('Insert movies',()=>prepareTest.seedTables(db,data))
         const path='/api/movies'
         const validId= 2
         const invalidId= 123456
@@ -70,17 +67,23 @@ describe.only('MOVIE ENDPOINT',()=>{
                 .set('Authorization',`Basic ${process.env.API_TOKEN}`)
                 .expect(200,expectedMovie)
             })
-            it.only('GET movie review',()=>{
-                const expectedMovieReviews= helpers.makeExpectedMovieReviews(testUsers,testReviews,validId)
+            it('GET movie review',()=>{
+                const expectedReviews= expected.movieReviews(testUsers,testReviews,validId)
                 return supertest(app).get(`/api/movies/${validId}/reviews`)
                 .set('Authorization',`Basic ${process.env.API_TOKEN}`)
-                .expect(200,expectedMovieReviews)
+                .expect(200,expectedReviews)
             })
-            it.skip('GET movie cast',()=>{
-
+            it('GET movie cast',()=>{
+                const expectedCast=expected.movieCast(testArtists,testCasts,validId)
+                return supertest(app).get(`/api/movies/${validId}/cast`)
+                .set('Authorization',`Basic ${process.env.API_TOKEN}`)
+                .expect(200,expectedCast)
             })
-            it.skip('GET movie director',()=>{
-
+            it('GET movie director',()=>{
+                const expectedCast=expected.movieDirector(testArtists,testCasts,validId)
+                return supertest(app).get(`/api/movies/${validId}/director`)
+                .set('Authorization',`Basic ${process.env.API_TOKEN}`)
+                .expect(200,expectedCast)
             })
             it.skip('DELETE movie',()=>{
                 const expectedMovie= testMovies.filter(movie=>movie.id!==validId)
@@ -107,23 +110,40 @@ describe.only('MOVIE ENDPOINT',()=>{
             })
         })
     })
-    describe.skip('ENDPOINT /api/movies/genres/:genres',()=>{
-        beforeEach('Insert movies',()=>db('movies').insert(testMovies))
-        const path='/api/movies/genres'
-        const validGenres= 'Film'
-        const invalidGenres= 'Invalid'
-        const MovieList= testMovies.filter(movie=>movie.genres.includes(validGenres))
-        it(`Given genres is invalid or not found`,()=>{
-            return supertest(app).get(`${path}/${invalidGenres}`)
-            .set('Authorization',`Basic ${process.env.API_TOKEN}`)
-            .expect(404,{error:{
-                message:`Movie not found`
-            }})
+    describe('SORT MOVIES',()=>{
+        beforeEach('Insert movies',()=>prepareTest.seedTables(db,data))
+        const genres= {path:'/api/movies/genres',name:'Sort by invalid genres'}
+        const country={path:'/api/movies/country',name:'Sort by invalid country'}
+        
+        context('Given sort is invalid',()=>{
+            [genres,country].forEach(sort=>{
+                it(sort.name,()=>{
+                    return supertest(app).get(`${sort.path}/invalid`)
+                    .set('Authorization',`Basic ${process.env.API_TOKEN}`)
+                    .expect(404,{error:{
+                        message:`Movie not found`
+                    }})
+                })
+            })
         })
-        it(`Given genres is valid and movies found`,()=>{
-            return supertest(app).get(`${path}/${validGenres}`)
-            .set('Authorization',`Basic ${process.env.API_TOKEN}`)
-            .expect(200,MovieList)
+        context('Given sort is valid',()=>{
+            it('Sort by genres',()=>{
+                const validGenres= 'Film'
+                const MovieList= testMovies.filter(movie=>movie.genres.includes(validGenres))
+                return supertest(app).get(`${genres.path}/${validGenres}`)
+                    .set('Authorization',`Basic ${process.env.API_TOKEN}`)
+                    .expect(200,MovieList)
+            })
+            it('Sort by country',()=>{
+                const validCountry= 'United States'
+                const MovieList= testMovies.filter(movie=>movie.country===validCountry)
+                return supertest(app).get(`${country.path}/${validCountry}`)
+                    .set('Authorization',`Basic ${process.env.API_TOKEN}`)
+                    .expect(200,MovieList)
+            })
         })
+        
+        
     })
+    
 })

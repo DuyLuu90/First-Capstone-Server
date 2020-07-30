@@ -2,7 +2,7 @@ const knex= require('knex')
 const helpers= require('./test-helpers')
 const app= require('../src/app')
 
-
+/*
 describe('FORM VALIDATION',()=>{
     const testUsers= helpers.makeUsersArray()
     const testUser= testUsers[0]
@@ -142,4 +142,4 @@ describe('FORM VALIDATION',()=>{
                 .expect(400,{error:`Incorrect username or password`})
         })
     })
-})
+})*/

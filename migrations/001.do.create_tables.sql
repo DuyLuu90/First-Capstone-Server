@@ -30,15 +30,15 @@ CREATE TABLE IF NOT EXISTS artists (
     title TEXT NOT NULL,
     avatar TEXT,
     birth_year INTEGER,
-    country TEXT,
+    country TEXT
 );
 
 CREATE TABLE IF NOT EXISTS movie_cast(
     id SERIAL PRIMARY KEY,
     movieid INTEGER REFERENCES movies(id) ON DELETE CASCADE NOT NULL,
-    director_id INTEGER REFERENCES artists(id) ON DELETE CASCADE,
-    actor_1_id INTEGER REFERENCES artists(id) ON DELETE CASCADE,
-    actor_2_id INTEGER REFERENCES artists(id) ON DELETE CASCADE
+    director INTEGER REFERENCES artists(id) ON DELETE CASCADE,
+    actor_one INTEGER REFERENCES artists(id) ON DELETE CASCADE,
+    actor_two INTEGER REFERENCES artists(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS reviews(
