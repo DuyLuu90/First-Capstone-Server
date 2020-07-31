@@ -31,11 +31,11 @@ describe('USERS ENDPOINT',()=>{
             })    
         })
         context(`Given there are users`,()=>{
-            /*
+            
             beforeEach('Insert users',()=>
                 //db('users').insert(testUsers)
                 prepareTest.seedTables(db,data)
-            )*/
+            )
             it('GET all users',()=>{
                 return supertest(app).get('/api/users')
                 .set('Authorization',`Basic ${process.env.API_TOKEN}`)
@@ -47,23 +47,22 @@ describe('USERS ENDPOINT',()=>{
                     .send(newUser)
                     .expect(201)
                     .expect(res=>{
-                        console.log(res.body, res.headers)
+                        console.log('Line 50',res.body, res.headers)
                         expect(res.body).to.have.property('id')
                         expect(res.body).to.have.property('last_modified')
                         expect(res.headers.location).to.eql(`/api/users/${res.body.id}`)
                     })
-                    
-                    /*
                     .expect(res=>db('users').select('*').where({id: res.body.id}).first()
                         .then(row=>{
                             expect(row.username).to.eql(newUser.username)
-                            const expectedDate=new Date().toLocaleString('en',{timeZone:'UTC'})
+                            const expectedDate=new Date().toLocaleString('en',{timeZone:'America/Phoenix'})
                             const actualDate= new Date(row.last_modified).toLocaleString()
                             expect(actualDate).to.eql(expectedDate)   
-                            
-                        }))*/
-                        
-                        
+                            return bcrypt.compare(newUser.password,row.password)
+                                .then(compareMatch=>{
+                                expect(compareMatch).to.be.true
+                            })
+                        }))
                         
             })
         })
@@ -109,7 +108,9 @@ describe('USERS ENDPOINT',()=>{
                 })
             })
             it(`UPDATE user details`,()=>{
-
+                /*
+                const userToUpDate= testUsers.find(user=>user.id===validId)
+                const fieldToUpdate= {username: newUserName}*/
             })
         })
     })

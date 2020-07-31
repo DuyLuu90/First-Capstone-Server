@@ -12,13 +12,11 @@ const ReviewRouter= require('./endpoint-004-reviews/review-router')
 const ArtistRouter= require('./endpoint-005-artists/artists-router')
 
 const app= express()
-
-const morganSetting=(NODE_ENV === 'production'? 'tiny': 'common')
-app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny
+/*
+const morganSetting=(NODE_ENV === 'production'? 'tiny': 'short')
+app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny*/
 
 //app.use(cors())
-
-
 app.use(cors( {origin: CLIENT_ORIGIN} ))
 app.use(helmet())
 
