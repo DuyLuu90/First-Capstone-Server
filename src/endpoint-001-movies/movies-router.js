@@ -133,5 +133,9 @@ MovieRouter.route('/genres/:genres')
             .catch(next)
     })
 
+MovieRouter.route('/test')
+    .get((req,res,next)=>{
+        res.json('this is a test')
+    })
 
 module.exports= MovieRouter

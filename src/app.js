@@ -13,17 +13,16 @@ const ArtistRouter= require('./endpoint-005-artists/artists-router')
 
 const app= express()
 
-//const morganSetting=(NODE_ENV === 'production'? 'tiny': 'common')
-//app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny
+const morganSetting=(NODE_ENV === 'production'? 'tiny': 'common')
+app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny
 
 //app.use(cors())
 
 
-app.use(cors({
-    origin: 'http://localhost:3000'
-}))
+app.use(cors( {origin: CLIENT_ORIGIN} ))
 app.use(helmet())
 
+app.get('/',(req,res)=>res.send('abc'))
 app.use('/api/movies',MovieRouter)
 app.use('/api/users',UserRouter)
 app.use('/api/auth',AuthRouter)
