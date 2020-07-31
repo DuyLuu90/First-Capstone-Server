@@ -137,7 +137,7 @@ describe('MOVIE ENDPOINT',()=>{
                     .expect(200,MovieList)
             })
             it('Sort by country',()=>{
-                const validCountry= 'United States'
+                const validCountry= 'United States' 
                 const MovieList= testMovies.filter(movie=>movie.country===validCountry)
                 return supertest(app).get(`${country.path}/${validCountry}`)
                     .set('Authorization',`Basic ${process.env.API_TOKEN}`)
