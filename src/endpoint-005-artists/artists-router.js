@@ -22,6 +22,17 @@ ArtistRouter.route('/')
         })
         .catch(next)
 })
+.post(bodyParser,(req,res,next)=>{
+    const {full_name,title,avatar,birth_year,country}= req.body
+    const newArtist= {full_name,title,avatar,birth_year,country}
+    GeneralService.insertItem(req.app.get('db'),'artists',newArtist)
+        .then(ar=>{
+            res.status(201).location(path.posix.join(req.originalUrl,`/${ar.id}`))
+            .json(ar)
+        })
+        .catch(next)
+    
+})
 
 ArtistRouter.route('/:id')
 .all(requireBasicAuth)

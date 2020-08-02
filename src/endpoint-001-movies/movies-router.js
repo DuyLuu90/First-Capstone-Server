@@ -1,8 +1,8 @@
 const express= require('express')
+const path= require('path')
 
 const xss= require('xss')
 const bodyParser= express.json()
-const path= require('path')
 const {isWebUrl}= require('valid-url')
 
 const {GeneralService}= require('../service/api-service')
@@ -36,14 +36,18 @@ MovieRouter.route('/')
             .catch(next)
     })
     .post(bodyParser,(req,res,next)=>{
-        movieValidation(req,res,next)
-        const newMovie= {title,posterUrl,trailerUrl,summary,year,country,genres}
+        const errorMessage= movieValidation(req,res,next)
+        if(errorMessage) {
+            return res.status(400).json({error: errorMessage})
+        }
+        const {title,posterurl,trailerurl,summary,year,country,genres}= req.body
+        const newMovie= {title,posterurl,trailerurl,summary,year,country,genres}
         GeneralService.insertItem(req.app.get('db'),'movies',newMovie)
             .then(movie=>{
-                res.status(201)
-                .location(path.poxis.join(req.originalUrl,`/${movie.id}`))
+                res.status(201).location(path.posix.join(req.originalUrl,`/${movie.id}`))
                 .json(sanitizedMovie(movie))
             })
+            .catch(next)
         
     })
 MovieRouter.route('/:id')
@@ -59,8 +63,8 @@ MovieRouter.route('/:id')
         .catch(next)
     })
     .patch(bodyParser,(req,res,next)=>{
-        const{title,posterUrl,trailerUrl,summary,year,country,genres}= req.body
-        const movieToUpdate= {title,posterUrl,trailerUrl,summary,year,country,genres}
+        const{title,posterurl,trailerurl,summary,year,country,genres}= req.body
+        const movieToUpdate= {title,posterurl,trailerurl,summary,year,country,genres}
         const knex= req.app.get('db')
 
         const numberofValues= Object.values(movieToUpdate).filter(Boolean).length
@@ -131,11 +135,6 @@ MovieRouter.route('/genres/:genres')
                 next()
             })
             .catch(next)
-    })
-
-MovieRouter.route('/test')
-    .get((req,res,next)=>{
-        res.json('this is a test')
     })
 
 module.exports= MovieRouter

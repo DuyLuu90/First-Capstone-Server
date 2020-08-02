@@ -11,3 +11,4 @@ module.exports= {
         },
     },
 }
+console.log(__dirname + '/knex/seeds')
