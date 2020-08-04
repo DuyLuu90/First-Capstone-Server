@@ -116,6 +116,4 @@ describe('ALL ENDPOINTS',()=>{
             })
         })
     })
-
-    
 })

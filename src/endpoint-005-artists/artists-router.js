@@ -49,7 +49,7 @@ ArtistRouter.route('/:id')
     const {full_name,title,avatar,birth_year,country}= req.body
     const ArtistUpdate= {full_name,title,avatar,birth_year,country}
     GeneralService.updateItem(req.app.get('db'),'artists',req.params.id,ArtistUpdate)
-    .then(()=>res.status(204).end())
+    .then(()=>res.status(200).json('req sent successfully'))
     .catch(next)
 })
 
