@@ -1,11 +1,11 @@
 module.exports= {
     PORT: process.env.PORT || 8000,
     NODE_ENV: process.env.NODE_ENV || 'development',
-    API_BASE_URL: (this.NODE_ENV==='production')
+    API_BASE_URL: (process.env.NODE_ENV==='production')
                 ?  process.env.REACT_APP_API_BASE_URL || "https://secure-caverns-32891.herokuapp.com/api"
                 : "http://localhost:8000/api", 
     
-    DATABASE_URL: (this.NODE_ENV==='production')
+    DATABASE_URL: (process.env.NODE_ENV==='production')
                 ? process.env.DATABASE_URL 
                 : process.env.LOCAL_DATABASE_URL,
             
