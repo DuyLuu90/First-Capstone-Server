@@ -13,6 +13,7 @@ const MovieRouter= express.Router()
 const {requireBasicAuth}= require('../middleware/require-auth')
 const {movieValidation}= require('../middleware/form-validation')
 const {checkItemExists}= require('../middleware/general-validation')
+const { json } = require('express')
 
 const sanitizedMovie= movie=>({
     id: movie.id,
@@ -59,7 +60,7 @@ MovieRouter.route('/:id')
     .delete((req,res,next)=>{
         const {id}=req.params
         GeneralService.deleteItem(req.app.get('db'),'movies',id)
-        .then(()=>res.status(204).end())
+        .then(()=>res.status(200).json('Movie has been deleted'))
         .catch(next)
     })
     .patch(bodyParser,(req,res,next)=>{
@@ -74,7 +75,7 @@ MovieRouter.route('/:id')
             }})
         }
         GeneralService.updateItem(knex,'movies',req.params.id, movieToUpdate)
-        .then(()=>res.status(204).end())
+        .then(()=>res.status(200).json('req sent successfully'))
         .catch(next)
     })
 
@@ -85,6 +86,20 @@ MovieRouter.route('/:id/cast')
         MovieService.getMovieCast(req.app.get('db'),req.params.id)
         .then(cast=>res.status(200).json(cast))
         .catch(next)
+    })
+    .post(bodyParser,(req,res,next)=>{
+        const {movieid,director,actor_one,actor_two}= req.body
+        const newCast= {movieid,director,actor_one,actor_two}
+        GeneralService.insertItem(req.app.get('db'),'movie_cast',newCast)
+            .then(cast=>json(cast))
+            .catch(next)
+    })
+    .patch(bodyParser,(req,res,next)=>{
+        const {director,actor_one,actor_two}= req.body
+        const updatedCast= {director,actor_one,actor_two}
+        MovieService.updateMovieCast(req.app.get('db'),req.params.id,updatedCast)
+            .then(()=>res.status(200).json('req sent successfully'))
+            .catch(next)
     })
 MovieRouter.route('/:id/director')
     .all(requireBasicAuth)

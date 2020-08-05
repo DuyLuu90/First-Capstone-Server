@@ -51,7 +51,7 @@ UserRouter.route('/:id')
     })
     .delete((req,res,next)=>{
         GeneralService.deleteItem(req.app.get('db'),'users',req.params.id)
-        .then(()=>res.status(204).end())
+        .then(()=>res.status(200).json('User has been deleted'))
         .catch(next)
     })
     .patch(bodyParser,(req,res,next)=>{
@@ -60,14 +60,15 @@ UserRouter.route('/:id')
                 last_modified: new Date().toLocaleString()}
 
         if (!password) return GeneralService.updateItem(req.app.get('db'),'users',req.params.id,userToUpdate)
-        .then(()=>res.status(204).end()).catch(next)
+        .then(()=>res.status(200).json('Success'))
+        .catch(next)
 
         else {
             UserService.hashPassword(password)
             .then(hashedPassword=>{
                 const updatedUser= {...userToUpdate,password: hashedPassword}
                 return GeneralService.updateItem(req.app.get('db'),'users',req.params.id,updatedUser)
-                .then(()=>res.status(204).end())})
+                .then(()=>res.status(200).json('Success'))})
             .catch(next)
         } 
     })

@@ -40,6 +40,14 @@ const MovieService = {
             this.on('cast.director','ar.id')
         }) 
     },
+    updateMovieCast(db,movieid,fieldsToUpdate){
+        return db.from('movie_cast').where({movieid})
+            .then(()=>db('movie_cast').where({movieid}).update(fieldsToUpdate))
+            .catch(()=>{
+                const data= {...fieldsToUpdate, movieid:movieid}
+                return db.insert(data).into('movie_cast').returning('*').then(rows=>rows[0])
+            })
+    }
 }
 
 const userFields = [

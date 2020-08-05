@@ -42,7 +42,7 @@ ArtistRouter.route('/:id')
 })
 .delete((req,res,next)=>{
     GeneralService.deleteItem(req.app.get('db'),'artists',req.params.id)
-    .then(()=>res.status(204).end())
+    .then(()=>res.status(200).json('The artist has been deleted'))
     .catch(next)
 })
 .patch(bodyParser,(req,res,next)=>{
