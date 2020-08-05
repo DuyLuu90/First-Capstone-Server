@@ -32,7 +32,7 @@ app.use('/api/artists',ArtistRouter)
 app.use((error, req,res, next)=>{
     let response;
     if (NODE_ENV === 'production') {
-        response= {error: {message: 'server error'}}
+        response= {error: {message: error.message}}
     }
     else response={message: error.message, error}
     res.status(500).json(response)
