@@ -13,14 +13,14 @@ const {requireBasicAuth}= require('../middleware/require-auth')
 const {userValidation}= require('../middleware/form-validation')
 const {checkItemExists}= require('../middleware/general-validation')
 
-UserRouter
+UserRouter.route('/')
     .all(requireBasicAuth)
-    .get('/',(req,res,next)=>{
+    .get((req,res,next)=>{
         GeneralService.getAllItems(req.app.get('db'),'users')
         .then(users=>res.status(200).json(users))
         .catch(next)
     })
-    .post('/',bodyParser,(req,res,next)=>{
+    .post(bodyParser,(req,res,next)=>{
         const errorMessage= userValidation(req,res,next)
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})
