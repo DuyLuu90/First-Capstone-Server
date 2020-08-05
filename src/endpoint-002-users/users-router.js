@@ -55,8 +55,8 @@ UserRouter.route('/:id')
         .catch(next)
     })
     .patch(bodyParser,(req,res,next)=>{
-        const {first_name,last_name,username,password,gender,country}= req.body
-        const userToUpdate= {first_name,last_name,username,password,gender,country,
+        const {first_name,last_name,username,password,gender,country,block_list}= req.body
+        const userToUpdate= {first_name,last_name,username,password,gender,country,block_list,
                 last_modified: new Date().toLocaleString()}
 
         if (!password) return GeneralService.updateItem(req.app.get('db'),'users',req.params.id,userToUpdate)

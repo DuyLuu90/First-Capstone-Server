@@ -64,8 +64,8 @@ MovieRouter.route('/:id')
         .catch(next)
     })
     .patch(bodyParser,(req,res,next)=>{
-        const{title,posterurl,trailerurl,summary,year,country,genres}= req.body
-        const movieToUpdate= {title,posterurl,trailerurl,summary,year,country,genres}
+        const{title,published,posterurl,trailerurl,summary,year,country,genres}= req.body
+        const movieToUpdate= {title,published,posterurl,trailerurl,summary,year,country,genres}
         const knex= req.app.get('db')
 
         const numberofValues= Object.values(movieToUpdate).filter(Boolean).length
