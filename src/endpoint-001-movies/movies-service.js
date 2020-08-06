@@ -15,7 +15,7 @@ const MovieService = {
     getReviewsForMovie(db,movieid){
         return db
         .from('reviews AS rev')
-        .select('rev.id','rev.rating','rev.comment','rev.date_submitted',
+        .select('rev.id','rev.rating','rev.comment','rev.date_submitted','rev.upvote','rev.downvote',
             ...userFields,
         )
         .where('rev.movieid',movieid)

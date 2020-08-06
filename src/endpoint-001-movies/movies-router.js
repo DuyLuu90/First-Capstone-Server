@@ -119,6 +119,26 @@ MovieRouter.route('/:id/reviews')
         .catch(next)
     })
 
+MovieRouter.route('/reviews/:id')
+    .all(requireBasicAuth)
+    .all((req,res,next)=>checkItemExists(req,res,next,'reviews'))
+    .delete((req,res,next)=>{
+        const {id}=req.params
+        GeneralService.deleteItem(req.app.get('db'),'reviews',id)
+        .then(()=>res.status(200).json('Review has been deleted'))
+        .catch(next)
+    })
+    .patch(bodyParser,(req,res,next)=>{
+        const {comment,rating,upvote,downvote}= req.body
+        const updatedReview= {comment,rating,upvote,downvote}
+        for (const key of ['comment','rating','upvote','downvote']){
+            if (updatedReview[key]==='') delete updatedReview[key]
+        }
+        GeneralService.updateItem(req.app.get('db'),'reviews',req.params.id,updatedReview)
+            .then(()=>res.status(200).json('req sent successfully'))
+            .catch(next)
+    })
+
 MovieRouter.route('/genres/:genres')
     .all(requireBasicAuth)
     .get((req,res,next)=>{
