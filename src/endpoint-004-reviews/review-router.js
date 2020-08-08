@@ -1,5 +1,5 @@
 const express = require('express')
-
+const cors = require('cors')
 const path= require('path')
 const xss= require('xss')
 const bodyParser= express.json()
@@ -14,7 +14,7 @@ const {checkItemExists}= require('../middleware/general-validation')
 
 ReviewRouter
     .all(requireBasicAuth)
-    .post('/',bodyParser,(req,res,next)=>{
+    .post('/',cors(),bodyParser,(req,res,next)=>{
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
 

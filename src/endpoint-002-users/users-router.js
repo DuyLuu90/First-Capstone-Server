@@ -1,7 +1,7 @@
 const express = require('express')
-
+const cors = require('cors')
 const path= require('path')
-const xss= require('xss')
+//const xss= require('xss')
 const bodyParser= express.json()
 
 const UserRouter= express.Router()
@@ -20,7 +20,7 @@ UserRouter.route('/')
         .then(users=>res.status(200).json(users))
         .catch(next)
     })
-    .post(bodyParser,(req,res,next)=>{
+    .post(bodyParser,cors(),(req,res,next)=>{
         const errorMessage= userValidation(req,res,next)
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})
