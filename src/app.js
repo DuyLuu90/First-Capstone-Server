@@ -16,8 +16,8 @@ const app= express()
 const morganSetting=(NODE_ENV === 'production'? 'tiny': 'short')
 app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny*/
 
-app.use(cors())
-//app.use(cors( {origin: CLIENT_ORIGIN} ))
+//app.use(cors())
+app.use(cors( {origin: CLIENT_ORIGIN} ))
 app.use(helmet())
 
 app.get('/',(req,res)=>res.send('abc'))
