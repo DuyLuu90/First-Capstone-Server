@@ -1,26 +1,74 @@
 # Dramapedia
 
-This is my first full stack Capstone
+This is my first full stack capstone, as a junior Developer, to demonstrate my mastery of React, Node and PostgresSQL, . For this capstone, I built both the client and the API to support the app. To learn more about my app features, please read [HERE](https://github.com/DuyLuu90/First-Capstone-Client/blob/master/README.md)
+
+## Built with:
+* Node JS
+* Javascript
+* PostgreSQL (Relational DBMS), DBeaver(GUI client)
+
+**Resources**:
+* [SQL Syntax](https://www.w3schools.com/sql/sql_syntax.asp)
 
 ## Set up
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+Complete the steps [HERE](https://github.com/DuyLuu90/express-boilerplate/edit/master/README.md) to start your new project.
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+To read my notes for express, PostgreSQL and more, please click [here](https://github.com/DuyLuu90/express-boilerplate/master/md/Notes.md)
 
-## Scripts
+## Installed packages:
+* express (top-level function), morgan(logging),dotenv(to populate the process.env)
+* cors(add header of CORS to the req),helmet(hide response headers)
+* uuid(auto-generate a unique id),winston(logging library),xss(sanitizing tool
+* knex(SQL query builder library), pq(driver for Postgres)
+* bcryptjs (for hashing data), jsonwebtoken(to represent user's credentials)
 
-Start the application `npm start`
+**For development only:**
 
-Start nodemon for the application `npm run dev`
+* nodemon(auto restart)
+* mocha(testing framework), chai(assertion library), supertest(for http calls)
+* postgrator-cli (to use migrations for PostgresSQL)
 
-Run the tests `npm test`
+## Code structure/Best practices/Style/Security:
+**Modularing (aka horizontally organizing) and layering**
+* endpoint : router(`express.Router`) and its customized services
+* middleware
+* service
+* test
 
-## Deploying
+**Don't repeat yourself(DRY)**
+- `src/service/api-service.js`: general services used by all routers
+- `src/test/endpoint.ALL.spec.js`: tests are used by all endpoints
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+**Encapsulation**
+* Customized service for each endpoint
+
+**Separation of concerns**
+- `src/middleware/general-validation.js`: check items if they exist
+- `src/middleware/form-validation.js`: check user input
+- `src/middleware/require-auth.js`: check user authorization and authentication 
+
+**Architecture Style**:
+REST(Representation State Transfer):
+  - clear SOC (client:UI, server: data storage)
+  - statelessness (server has no session)
+  - predictable responses (create profile pages)
+  - uniform interface ( get resources from the server->update the state)
+  
+**Security**:
+- Authorization: API token is required to get access to the db
+- Authentication: user must log in with valid username/password to make any changes to the db.
+- Data protection: Bcrypt is used to pseudonymise the passwords stored in the db
+- Secure login: JWT is used to represent user credentials. 
+
+## Learn More
+
+[Live version](https://first-capstone-client.vercel.app/)
+
+[API Server](https://secure-caverns-32891.herokuapp.com/)
+
+[Github Client](https://github.com/DuyLuu90/First-Capstone-Client)
+
+## Connect:
+
+[LinkedIn](https://www.linkedin.com/in/duy-luu-82234232/)
