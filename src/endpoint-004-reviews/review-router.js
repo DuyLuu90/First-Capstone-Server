@@ -1,5 +1,4 @@
 const express = require('express')
-const cors = require('cors')
 const path= require('path')
 const xss= require('xss')
 const bodyParser= express.json()
@@ -14,7 +13,8 @@ const {checkItemExists}= require('../middleware/general-validation')
 
 ReviewRouter
     .all(requireBasicAuth)
-    .post('/',cors(),bodyParser,(req,res,next)=>{
+    .post('/',bodyParser,(req,res,next)=>{
+        res.set('Access-Control-Allow-Origin','*')
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
 

@@ -1,5 +1,4 @@
 const express = require('express')
-const cors = require('cors')
 const path= require('path')
 //const xss= require('xss')
 const bodyParser= express.json()
@@ -20,7 +19,8 @@ UserRouter.route('/')
         .then(users=>res.status(200).json(users))
         .catch(next)
     })
-    .post(bodyParser,cors(),(req,res,next)=>{
+    .post(bodyParser,(req,res,next)=>{
+        res.set('Access-Control-Allow-Origin','*')
         const errorMessage= userValidation(req,res,next)
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})
