@@ -17,7 +17,7 @@ const morganSetting=(NODE_ENV === 'production'? 'tiny': 'short')
 app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny*/
 
 //app.use(cors())
-app.use(cors( {origin: "https://drama-pedia.vercel.app"} ))
+app.use(cors( {origin: "*"} ))
 app.use(helmet())
 
 app.get('/',(req,res)=>res.send('abc'))
