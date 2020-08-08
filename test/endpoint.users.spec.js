@@ -29,11 +29,11 @@ describe('USERS ENDPOINT',()=>{
         
         describe(`UPDATE user details`,()=>{
             context('Without password',()=>{
-                it('respond 204 with the updated fields',()=>{
+                it('respond 200 with the updated fields',()=>{
                     let fieldToUpdate= {username: 'newUserName',}
                     return validFetch.PATCH.send(fieldToUpdate)
                         //.send({...fieldToUpdate, fieldToIgnore: 'should not be in GET response'})
-                        .expect(204)
+                        .expect(200)
                         .then(res=>validFetch.GET.then(res=>{
                                 console.log(res.body.username)
                                 for (const field in fieldToUpdate ){

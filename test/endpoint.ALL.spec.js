@@ -82,7 +82,7 @@ describe('ALL ENDPOINTS',()=>{
                                 const fieldsToUpdate= obj[key]
                                 if (key==='With_password'){
                                     return validFetch.PATCH.send(fieldsToUpdate)
-                                        .expect(204)
+                                        .expect(200)
                                         .then(res=>validFetch.GET
                                             .then(row=>{
                                                 return bcrypt.compare(fieldsToUpdate.password,row.body.password)
@@ -91,7 +91,7 @@ describe('ALL ENDPOINTS',()=>{
                                         )
                                 }
                                 return validFetch.PATCH.send(fieldsToUpdate)
-                                        .expect(204)
+                                        .expect(200)
                                         .then(res=>validFetch.GET
                                             .then(row=>{
                                                 for (const field in fieldsToUpdate ){
@@ -109,7 +109,7 @@ describe('ALL ENDPOINTS',()=>{
                     })
                     it(`DELETE`,()=>{
                         const expectedItems=AllItems.filter(item=>item.id!==validId)
-                        return validFetch.DELETE.expect(204)
+                        return validFetch.DELETE.expect(200)
                         .then(()=>get.expect(200,expectedItems))
                     })
                 })

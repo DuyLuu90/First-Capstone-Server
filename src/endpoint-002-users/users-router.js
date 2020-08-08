@@ -20,7 +20,7 @@ UserRouter.route('/')
         .catch(next)
     })
     .post(bodyParser,(req,res,next)=>{
-        res.set('Access-Control-Allow-Origin','*')
+        //res.set('Access-Control-Allow-Origin','*')
         const errorMessage= userValidation(req,res,next)
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})

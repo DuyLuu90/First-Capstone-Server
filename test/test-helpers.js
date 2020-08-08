@@ -186,6 +186,7 @@ const expected= {
                 rating: review.rating,
                 comment: review.comment,
                 date_submitted: review.date_submitted,
+                rating:3,upvote:3,downvote:3,
                 'user:id' : reviewUser.id,
                 'user:username': reviewUser.username,
                 'user:first_name': reviewUser.first_name,
