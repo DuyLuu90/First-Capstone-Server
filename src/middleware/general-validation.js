@@ -1,4 +1,4 @@
-const {GeneralService}= require('../service/api-service')
+const {GeneralService}= require('../route-helpers')
 
 async function checkItemExists(req, res, next,dbName) {
     try {
@@ -13,4 +13,11 @@ async function checkItemExists(req, res, next,dbName) {
     }
 }
 
-module.exports= {checkItemExists}
+function sanitizeItem(item, keys=[]){
+    for (const key of keys) {
+        item[key]= xss(item[key])
+    }
+    return item
+}
+
+module.exports= {checkItemExists,sanitizeItem}

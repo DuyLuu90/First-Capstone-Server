@@ -18,7 +18,7 @@ const morganSetting=(NODE_ENV === 'production'? 'tiny': 'short')
 app.use(morgan(morganSetting)) //combined vs common vs dev vs short vs tiny
 */
 app.use(cors())
-//app.use(cors( {origin: "*"} ))
+//app.use(cors( {origin: CLIENT_ORIGIN} ))
 app.use(helmet())
 
 app.use('/api/movies',MovieRouter)

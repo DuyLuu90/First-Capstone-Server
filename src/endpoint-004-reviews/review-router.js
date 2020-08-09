@@ -1,30 +1,36 @@
-const express = require('express')
-const path= require('path')
-const xss= require('xss')
-const bodyParser= express.json()
-
+//const express = require('express')
+const {GeneralService,express,path,xss,bodyParser}= require('../route-helpers')
 const ReviewRouter= express.Router()
-//const ReviewService = require('./review-service')
-const {GeneralService}= require('../service/api-service')
 
-//middleware
+//MIDDLEWARE
 const {requireBasicAuth}= require('../middleware/require-auth')
 const {checkItemExists}= require('../middleware/general-validation')
 
+/*
+const sanitizedReview= review=> {
+    const newReview= {...review, comment: xss(review.comment)}
+    return newReview
+}*/
+
+const sanitizedItem= (item,keys=[])=>{
+    for (const key of keys) {
+        item[key]= xss(item[key])
+    }
+    return item
+}
 ReviewRouter
     .all(requireBasicAuth)
     .post('/',bodyParser,(req,res,next)=>{
         res.header('Access-Control-Allow-Origin','*')
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
-
-        GeneralService.insertItem(req.app.get('db'),'reviews',newReview)
+        const data= sanitizedItem(newReview,['comment'])
+        GeneralService.insertItem(req.app.get('db'),'reviews',data)
             .then(review=>{
                 res.status(201)
                 .location(path.posix.join(req.originalUrl,`/${review.id}`))
                 .json(review) 
-            }).catch(next)
-
+            })
     })
 
 ReviewRouter.route('/:id')
@@ -35,16 +41,18 @@ ReviewRouter.route('/:id')
     })
     .delete((req,res,next)=>{
         GeneralService.deleteItem(req.app.get('db'),'reviews',req.params.id)
-        .then(()=>res.status(204).end())
+        .then(()=>res.status(200).json('Review has been deleted'))
         .catch(next)
     })
     .patch(bodyParser,(req,res,next)=>{
-        const {upvote,downvote,replies,report}= req.body
-        const reviewUpdate= {upvote,downvote,replies,report}
-
-        GeneralService.updateItem(req.app.get('db'),'reviews',req.params.id,reviewUpdate)
-        .then(()=>res.status(204).end())
-        .catch(next)
+        const {comment,rating,upvote,downvote}= req.body
+        const updatedReview= {comment,rating,upvote,downvote}
+        for (const key of ['comment','rating','upvote','downvote']){
+            if (updatedReview[key]==='') delete updatedReview[key]
+        }
+        GeneralService.updateItem(req.app.get('db'),'reviews',req.params.id,updatedReview)
+            .then(()=>res.status(200).json('req sent successfully'))
+            .catch(next)
     })
 
 module.exports= ReviewRouter

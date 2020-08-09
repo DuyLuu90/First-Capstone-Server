@@ -1,12 +1,8 @@
-const express= require('express')
-
-const xss= require('xss')
-const bodyParser= express.json()
-const path= require('path')
-const {isWebUrl}= require('valid-url')
-
-const {GeneralService}= require('../service/api-service')
+//const express= require('express')
+const {GeneralService,express,path,xss,bodyParser}= require('../route-helpers')
 const ArtistRouter= express.Router()
+
+//SERVICE:
 const ArtistService= require('./artists-service')
 
 //MIDDLEWARE:

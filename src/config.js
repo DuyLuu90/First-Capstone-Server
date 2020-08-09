@@ -8,6 +8,8 @@ module.exports= {
     DATABASE_URL: (process.env.NODE_ENV==='production')
                 ? process.env.DATABASE_URL 
                 : process.env.LOCAL_DATABASE_URL,
+
+    API_TOKEN: process.env.API_TOKEN,
             
     TEST_DATABASE_URL: process.env.TEST_DATABASE_URL,
 

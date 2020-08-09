@@ -1,8 +1,8 @@
+const express = require('express')
+const path= require('path')
 const xss= require('xss')
-const Treeize = require('treeize')
-const bcrypt = require('bcryptjs')
-const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
-const validLetters=/^[A-Za-z ]+$/
+const bodyParser= express.json()
+const {isWebUrl}= require('valid-url')
 
 const GeneralService={
     getAllItems(db,dbName){
@@ -23,20 +23,4 @@ const GeneralService={
     }
 }
 
-const MovieService={
-    
-}
-
-const UserService={
-
-}
-
-const ArtistService={
-
-}
-
-const AuthService={
-
-}
-
-module.exports={GeneralService,MovieService,UserService,ArtistService,AuthService}
+module.exports={GeneralService,express,path,xss,bodyParser,isWebUrl}

@@ -1,5 +1,3 @@
-const xss = require('xss')
-
 const ReviewService = {
 /*
   getById(db, id) {
