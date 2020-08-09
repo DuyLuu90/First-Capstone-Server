@@ -1,5 +1,5 @@
 const UserService= require('../endpoint-002-users/users-service')
-const AuthService= require('../endpoint-003-auth/auth-service')
+//const AuthService= require('../endpoint-003-auth/auth-service')
 
 function userValidation(req,res,next){ 
     const {first_name,last_name,username,password}= req.body
