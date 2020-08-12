@@ -32,11 +32,29 @@ const sanitizedMovie = movie =>{
 MovieRouter.route('/')
     .all(requireBasicAuth)
     .get((req,res,next)=>{
-        GeneralService.getAllItems(req.app.get('db'),'movies')
+        const {country,genres}= req.query
+        if (genres) {
+            MovieService.getMovieByGenres(req.app.get('db'),genres)
+            .then(movies=>{
+                if(movies.length===0) {
+                    return res.status(404).json({error:{message:`Movie not found`}})
+                }
+                res.status(200).json(movies)
+            }).catch(next)
+        }
+        else if(country) {
+            MovieService.getMovieByCountry(req.app.get('db'),country)
+            .then(movies=>{
+                if(movies.length===0) {
+                    return res.status(404).json({error:{message:`Movie not found`}})
+                }
+                res.status(200).json(movies)
+            }).catch(next)
+        }
+        else GeneralService.getAllItems(req.app.get('db'),'movies')
             .then(movies=>{
                 return res.status(200).json(movies)
-            })
-            .catch(next)
+            }).catch(next)  
     })
     .post(bodyParser,(req,res,next)=>{
         const errorMessage= movieValidation(req,res,next)
@@ -119,39 +137,6 @@ MovieRouter.route('/:id/reviews')
         MovieService.getReviewsForMovie(req.app.get('db'),req.params.id)
         .then(reviews=>res.status(200).json(reviews))
         .catch(next)
-    })
-
-MovieRouter.route('/genres/:genres')
-    .all(requireBasicAuth)
-    .get((req,res,next)=>{
-        const {genres}= req.params
-        MovieService.getMovieByGenres(req.app.get('db'),genres)
-            .then(movies=>{
-                if(movies.length===0) {
-                    return res.status(404).json({error:{
-                        message:`Movie not found`
-                    }})
-                }
-                res.status(200).json(movies)
-                next()
-            })
-            .catch(next)
-    })
-MovieRouter.route('/country/:country')
-    .all(requireBasicAuth)
-    .get((req,res,next)=>{
-        const {country}= req.params
-        MovieService.getMovieByCountry(req.app.get('db'),country)
-            .then(movies=>{
-                if(movies.length===0) {
-                    return res.status(404).json({error:{
-                        message:`Movie not found`
-                    }})
-                }
-                res.status(200).json(movies)
-                next()
-            })
-            .catch(next)
     })
 
 /*

@@ -5,7 +5,7 @@ const {prepareTest,expected} = require('./test-helpers')
 
 //SUMMARY= {Number-of-tests: 7 ,Passed: 7, Failed:0 , Skipped: 0} 
 
-describe('MOVIE ENDPOINT',()=>{
+describe.only('MOVIE ENDPOINT',()=>{
     const {testMovies,testUsers,testArtists,testReviews,testCasts}= prepareTest.getData()
     const data= {testMovies,testUsers,testArtists,testReviews,testCasts}
     
@@ -50,13 +50,13 @@ describe('MOVIE ENDPOINT',()=>{
 
     describe('SORT MOVIES',()=>{
         beforeEach('Insert movies',()=>prepareTest.seedTables(db,data))
-        const genres= {path:'/api/movies/genres',name:'Sort by invalid genres'}
-        const country={path:'/api/movies/country',name:'Sort by invalid country'}
+        const genres= {path:'/api/movies?genres',name:'Sort by invalid genres'}
+        const country={path:'/api/movies?country',name:'Sort by invalid country'}
         
         context('Given sort is invalid',()=>{
             [genres,country].forEach(sort=>{
                 it(sort.name,()=>{
-                    return supertest(app).get(`${sort.path}/invalid`)
+                    return supertest(app).get(`${sort.path}=invalid`)
                     .set('Authorization',`Basic ${process.env.API_TOKEN}`)
                     .expect(404,{error:{
                         message:`Movie not found`
@@ -68,14 +68,14 @@ describe('MOVIE ENDPOINT',()=>{
             it('Sort by genres',()=>{
                 const validGenres= 'Film'
                 const MovieList= testMovies.filter(movie=>movie.genres.includes(validGenres))
-                return supertest(app).get(`${genres.path}/${validGenres}`)
+                return supertest(app).get(`${genres.path}=${validGenres}`)
                     .set('Authorization',`Basic ${process.env.API_TOKEN}`)
                     .expect(200,MovieList)
             })
             it('Sort by country',()=>{
                 const validCountry= 'United States' 
                 const MovieList= testMovies.filter(movie=>movie.country===validCountry)
-                return supertest(app).get(`${country.path}/${validCountry}`)
+                return supertest(app).get(`${country.path}=${validCountry}`)
                     .set('Authorization',`Basic ${process.env.API_TOKEN}`)
                     .expect(200,MovieList)
             })
