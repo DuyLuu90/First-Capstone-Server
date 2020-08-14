@@ -6,14 +6,15 @@ const helmet= require('helmet')
 const {NODE_ENV,CLIENT_ORIGIN}= require('./config')
 
 const app= express()
+/*
 app.use(function (req, res, next) { 
     res.header("Access-Control-Allow-Origin", "*") 
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept") 
     next() 
-})
-/*
+})*/
+
 app.use(cors())
-app.options('*', cors());*/
+app.options('*', cors());
 
 
 const MovieRouter= require('./endpoint-001-movies/movies-router')
