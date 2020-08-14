@@ -21,7 +21,7 @@ const sanitizedItem= (item,keys=[])=>{
 ReviewRouter
     .all(requireBasicAuth)
     .post('/',bodyParser,(req,res,next)=>{
-        res.header('Access-Control-Allow-Origin','*')
+        //res.header('Access-Control-Allow-Origin','*')
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
         const data= sanitizedItem(newReview,['comment'])
