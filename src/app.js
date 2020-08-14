@@ -7,6 +7,7 @@ const {NODE_ENV,CLIENT_ORIGIN}= require('./config')
 
 const app= express()
 app.use(cors())
+app.options('*', cors());
 
 
 const MovieRouter= require('./endpoint-001-movies/movies-router')
