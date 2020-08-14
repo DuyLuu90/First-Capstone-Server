@@ -1,6 +1,8 @@
 //const express = require('express')
 const {GeneralService,express,path,xss,bodyParser}= require('../route-helpers')
 const ReviewRouter= express.Router()
+const cors = require('cors')
+ReviewRouter.use(cors())
 
 //MIDDLEWARE
 const {requireBasicAuth}= require('../middleware/require-auth')
