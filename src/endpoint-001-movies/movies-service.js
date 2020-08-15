@@ -1,6 +1,3 @@
-//const xss= require('xss')
-//const Treeize = require('treeize')
-
 const MovieService = {
     getMovieByGenres(db,genres){
         return db('movies').select('*').then(movies=>{
@@ -10,17 +7,6 @@ const MovieService = {
     getMovieByCountry(db,country){
         return db('movies').select('*').where('movies.country',country)
         .orderBy('movies.year','desc')
-    },
-    
-    getReviewsForMovie(db,movieid){
-        return db
-        .from('reviews AS rev')
-        .select('rev.id','rev.rating','rev.comment','rev.date_submitted','rev.upvote','rev.downvote',
-            ...userFields,
-        )
-        .where('rev.movieid',movieid)
-        .leftJoin('users AS usr','rev.userid','usr.id',)
-        .groupBy('rev.id', 'usr.id')
     },
     getMovieCast(db,movieid){
         return db.from(`movie_cast AS cast`)
@@ -47,15 +33,19 @@ const MovieService = {
                 const data= {...fieldsToUpdate, movieid:movieid}
                 return db.insert(data).into('movie_cast').returning('*').then(rows=>rows[0])
             })
-    }
+    },
+    /*
+    getReviewsForMovie(db,movieid){
+        return db
+        .from('reviews AS rev')
+        .select('rev.id','rev.rating','rev.comment','rev.date_submitted','rev.upvote','rev.downvote',
+            ...userFields,
+        )
+        .where('rev.movieid',movieid)
+        .leftJoin('users AS usr','rev.userid','usr.id',)
+        .groupBy('rev.id', 'usr.id')
+    },*/
 }
-
-const userFields = [
-    'usr.id AS user:id',
-    'usr.username AS user:username',
-    'usr.first_name AS user:first_name',
-    'usr.last_name AS user:last_name',
-]
 const artistFields=[
     'ar.id AS artist:id',
     'ar.full_name AS full_name'
