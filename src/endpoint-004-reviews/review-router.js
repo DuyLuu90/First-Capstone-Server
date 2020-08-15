@@ -1,5 +1,6 @@
 //const express = require('express')
 const {GeneralService,express,path,xss,bodyParser}= require('../route-helpers')
+const ReviewService= require('./review-service')
 const ReviewRouter= express.Router()
 
 //MIDDLEWARE
@@ -18,10 +19,35 @@ const sanitizedItem= (item,keys=[])=>{
     }
     return item
 }
-ReviewRouter
+ReviewRouter.route('/')
     .all(requireBasicAuth)
-    .post('/',bodyParser,(req,res,next)=>{
-        res.header('Access-Control-Allow-Origin','*')
+    .get((req,res,next)=>{
+        const {userid,movieid}= req.query
+        if (movieid){
+            ReviewService.getReviewsByMovie(req.app.get('db'),movieid)
+            .then(reviews=>{
+                if(reviews.length===0) {
+                    return res.status(404).json({error:{message:`Review not found`}})
+                }
+                res.status(200).json(reviews)
+            }).catch(next)
+        }
+        else if (userid){
+            ReviewService.getReviewsByUser(req.app.get('db'),userid)
+            .then(reviews=>{
+                if(reviews.length===0) {
+                    return res.status(404).json({error:{message:`Review not found`}})
+                }
+                res.status(200).json(reviews)
+            }).catch(next)
+            
+        }
+        else GeneralService.getAllItems(req.app.get('db'),'reviews')
+            .then(reviews=>res.status(200).json(reviews))
+            .catch(next)
+    })
+    .post(bodyParser,(req,res,next)=>{
+        //res.header('Access-Control-Allow-Origin','*')
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
         const data= sanitizedItem(newReview,['comment'])
