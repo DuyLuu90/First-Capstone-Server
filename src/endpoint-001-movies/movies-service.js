@@ -34,7 +34,6 @@ const MovieService = {
                 return db.insert(data).into('movie_cast').returning('*').then(rows=>rows[0])
             })
     },
-    /*
     getReviewsForMovie(db,movieid){
         return db
         .from('reviews AS rev')
@@ -44,11 +43,17 @@ const MovieService = {
         .where('rev.movieid',movieid)
         .leftJoin('users AS usr','rev.userid','usr.id',)
         .groupBy('rev.id', 'usr.id')
-    },*/
+    },
 }
 const artistFields=[
     'ar.id AS artist:id',
     'ar.full_name AS full_name'
+]
+const userFields = [
+    'usr.id AS user:id',
+    'usr.username AS user:username',
+    'usr.first_name AS user:first_name',
+    'usr.last_name AS user:last_name',
 ]
 
 module.exports= MovieService
