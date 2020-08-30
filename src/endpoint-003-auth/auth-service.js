@@ -30,4 +30,3 @@ const AuthService = {
 }
 module.exports=AuthService
 
-console.log(config.JWT_SECRET)

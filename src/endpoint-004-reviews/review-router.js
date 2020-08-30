@@ -26,10 +26,11 @@ ReviewRouter.route('/')
         if (movieid){
             ReviewService.getReviewsByMovie(req.app.get('db'),movieid)
             .then(reviews=>{
+                /*
                 if(reviews.length===0) {
                     return res.status(404).json({error:{message:`Review not found`}})
-                }
-                res.status(200).json(reviews)
+                }*/
+                return res.status(200).json(reviews)
             }).catch(next)
         }
         else if (userid){
