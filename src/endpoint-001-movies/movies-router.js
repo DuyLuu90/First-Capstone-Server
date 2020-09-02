@@ -61,8 +61,8 @@ MovieRouter.route('/')
         if(errorMessage) {
             return res.status(400).json({error: errorMessage})
         }
-        const {title,posterurl,trailerurl,summary,year,country,genres}= req.body
-        const newMovie= {title,posterurl,trailerurl,summary,year,country,genres}
+        const {title,posterurl,trailerurl,summary,year,country,genres,published}= req.body
+        const newMovie= {title,posterurl,trailerurl,summary,year,country,genres,published}
         GeneralService.insertItem(req.app.get('db'),'movies',newMovie)
             .then(movie=>{
                 res.status(201).location(path.posix.join(req.originalUrl,`/${movie.id}`))
