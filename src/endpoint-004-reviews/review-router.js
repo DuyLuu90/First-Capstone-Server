@@ -44,7 +44,8 @@ ReviewRouter.route('/')
                 .location(path.posix.join(req.originalUrl,`/${review.id}`))
                 .json(review) 
             })
-        //next()
+            .catch(err=>console.log(err))
+            //next() // 404
             //.catch(next) //500 on heroku
         
     })
