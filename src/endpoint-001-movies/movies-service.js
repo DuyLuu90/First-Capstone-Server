@@ -8,24 +8,6 @@ const MovieService = {
         return db('movies').select('*').where('movies.country',country)
         .orderBy('movies.year','desc')
     },
-    getMovieCast(db,movieid){
-        return db.from(`movie_cast AS cast`)
-        .select('cast.id',...artistFields)
-        .where('cast.movieid',movieid)
-        .innerJoin('artists AS ar',function(){
-            this
-                .on('cast.actor_one','ar.id')
-                .orOn('cast.actor_two','ar.id')
-        }) 
-    },
-    getMovieDirector(db,movieid){
-        return db.from(`movie_cast AS cast`)
-        .select('cast.id',...artistFields)
-        .where('cast.movieid',movieid)
-        .innerJoin('artists AS ar',function(){
-            this.on('cast.director','ar.id')
-        }) 
-    },
     updateMovieCast(db,movieid,fieldsToUpdate){
         return db.from('movie_cast').where({movieid})
             .then(()=>db('movie_cast').where({movieid}).update(fieldsToUpdate))
@@ -44,10 +26,45 @@ const MovieService = {
         .leftJoin('users AS usr','rev.userid','usr.id',)
         .groupBy('rev.id', 'usr.id')
     },
+    getArtistName(db,id1,id2,id3){
+        return db('artists').where('artists.id',id1)
+        .orWhere('artists.id',id2)
+        .orWhere('artists.id',id3)
+        
+    },
+    getMovieById(db,movieid){
+       return db('movies AS mov').select(movieFields).where('mov.id',movieid).first()
+        .leftJoin('movie_cast AS cast','cast.movieid','mov.id')
+        .select('cast.director','cast.actor_one','cast.actor_two')
+        .then(function(movie){
+            const {director,actor_one,actor_two}= movie
+            movie.actorList=[]
+            movie.directorList=[]
+            return MovieService.getArtistName(db,director,actor_one,actor_two).then(arr=>{
+                arr.map(obj=>{
+                    if (obj.id===director) movie.directorList.push({id:obj.id,name:obj.full_name})
+                    if (obj.id===actor_one || obj.id===actor_two) movie.actorList.push({id:obj.id,name:obj.full_name})  
+                })
+                for ( const key of ["director","actor_one","actor_two"]){
+                    delete movie[key]
+                }
+                return movie   
+            })
+        })
+        
+    }
 }
-const artistFields=[
-    'ar.id AS artist:id',
-    'ar.full_name AS full_name'
+const movieFields=[
+    'mov.id',
+    'mov.title',
+    'mov.posterurl',
+    'mov.trailerurl',
+    'mov.summary',
+    'mov.year',
+    'mov.country',
+    'mov.genres',
+    'mov.last_modified',
+    'mov.published'
 ]
 const userFields = [
     'usr.id AS user:id',

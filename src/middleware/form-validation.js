@@ -23,7 +23,6 @@ function movieValidation(req,res,next){
         }
     }
 }
-
 function loginValidation(req,res,next){
     for (const field of ['username','password',]) {
         if (!req.body[field]) {

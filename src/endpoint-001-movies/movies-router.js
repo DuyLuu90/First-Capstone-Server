@@ -11,19 +11,6 @@ const {movieValidation}= require('../middleware/form-validation')
 const {checkItemExists}= require('../middleware/general-validation')
 const { json } = require('express')
 
-/*
-const sanitizedMovie= movie=>({
-    id: movie.id,
-    title: xss(movie.title),
-    posterurl: movie.posterurl,
-    trailerurl: movie.trailerurl,
-    summary: xss(movie.summary),
-    year: Number(movie.year),
-    country: movie.country,
-    genres: movie.genres,
-    last_modified: movie.last_modified,
-})*/
-
 const sanitizedMovie = movie =>{
     const newMovie= {...movie, title: xss(movie.title), summary: xss(movie.summary), year: Number(movie.year)}
     return newMovie
@@ -74,8 +61,10 @@ MovieRouter.route('/')
 MovieRouter.route('/:id')
     .all(requireBasicAuth)
     .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
-    .get((req,res)=>{
-        res.json(sanitizedMovie(res.item))
+    .get((req,res,next)=>{
+        //res.json(sanitizedMovie(res.item))
+        MovieService.getMovieById(req.app.get('db'),req.params.id)
+            .then(movie=>res.json(movie)).catch(next)
     })
     .delete((req,res,next)=>{
         const {id}=req.params
@@ -102,11 +91,6 @@ MovieRouter.route('/:id')
 MovieRouter.route('/:id/cast')
     .all(requireBasicAuth)
     .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
-    .get((req,res,next)=>{
-        MovieService.getMovieCast(req.app.get('db'),req.params.id)
-        .then(cast=>res.status(200).json(cast))
-        .catch(next)
-    })
     .post(bodyParser,(req,res,next)=>{
         const {movieid,director,actor_one,actor_two}= req.body
         const newCast= {movieid,director,actor_one,actor_two}
@@ -121,14 +105,6 @@ MovieRouter.route('/:id/cast')
             .then(()=>res.status(200).json('req sent successfully'))
             .catch(next)
     })
-MovieRouter.route('/:id/director')
-    .all(requireBasicAuth)
-    .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
-    .get((req,res,next)=>{
-        MovieService.getMovieDirector(req.app.get('db'),req.params.id)
-        .then(director=>res.status(200).json(director))
-        .catch(next)
-})
 
 MovieRouter.route('/:id/reviews')
     .all(requireBasicAuth)
@@ -139,25 +115,6 @@ MovieRouter.route('/:id/reviews')
         .catch(next)
     })
 
-/*
-MovieRouter.route('/reviews/:id')
-    .all(requireBasicAuth)
-    .all((req,res,next)=>checkItemExists(req,res,next,'reviews'))
-    .delete((req,res,next)=>{
-        const {id}=req.params
-        GeneralService.deleteItem(req.app.get('db'),'reviews',id)
-        .then(()=>res.status(200).json('Review has been deleted'))
-        .catch(next)
-    })
-    .patch(bodyParser,(req,res,next)=>{
-        const {comment,rating,upvote,downvote}= req.body
-        const updatedReview= {comment,rating,upvote,downvote}
-        for (const key of ['comment','rating','upvote','downvote']){
-            if (updatedReview[key]==='') delete updatedReview[key]
-        }
-        GeneralService.updateItem(req.app.get('db'),'reviews',req.params.id,updatedReview)
-            .then(()=>res.status(200).json('req sent successfully'))
-            .catch(next)
-    })
-*/
 module.exports= MovieRouter
+
+
