@@ -37,8 +37,8 @@ ReviewRouter.route('/')
         //res.header('Access-Control-Allow-Origin','*')
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
-        const data= sanitizedItem(newReview,['comment'])
-        GeneralService.insertItem(req.app.get('db'),'reviews',data)
+        //const data= sanitizedItem(newReview,['comment'])
+        GeneralService.insertItem(req.app.get('db'),'reviews',newReview)
             .then(review=>{
                 res.status(201)
                 .location(path.posix.join(req.originalUrl,`/${review.id}`))
