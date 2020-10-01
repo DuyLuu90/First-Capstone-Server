@@ -1,4 +1,5 @@
 const {GeneralService}= require('../route-helpers')
+const xss= require('xss')
 
 async function checkItemExists(req, res, next,dbName) {
     try {
@@ -20,4 +21,12 @@ function sanitizeItem(item, keys=[]){
     return item
 }
 
-module.exports= {checkItemExists,sanitizeItem}
+function checkRequiredFields(req, fields=[]){
+    for (const field of fields) {
+        if(!req.body[field]) {
+            return `${field} is required`
+        }
+    }
+}
+
+module.exports= {checkItemExists,sanitizeItem,checkRequiredFields}
