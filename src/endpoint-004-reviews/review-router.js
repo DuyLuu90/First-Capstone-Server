@@ -38,9 +38,8 @@ ReviewRouter.route('/')
                 .location(path.posix.join(req.originalUrl,`/${review.id}`))
                 .json(review) 
             })
-            .catch(next)
-            //.catch(err=>console.log(err))
-            //.catch(next) //500 on heroku
+            .catch(err=>console.log(err))
+            //.catch(next) //500 on heroku: duplicate key value
         
     })
 
