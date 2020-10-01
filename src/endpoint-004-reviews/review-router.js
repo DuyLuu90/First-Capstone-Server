@@ -1,10 +1,10 @@
-const {GeneralService,express,path,xss,bodyParser}= require('../route-helpers')
+const {GeneralService,express,path,bodyParser}= require('../route-helpers')
 const ReviewService= require('./review-service')
 const ReviewRouter= express.Router()
 
 //MIDDLEWARE
 const {requireBasicAuth}= require('../middleware/require-auth')
-const {checkItemExists}= require('../middleware/general-validation')
+const {checkItemExists, sanitizeItem}= require('../middleware/general-validation')
 
 /*
 const sanitizedReview= review=> {
@@ -12,12 +12,6 @@ const sanitizedReview= review=> {
     return newReview
 }*/
 
-const sanitizedItem= (item,keys=[])=>{
-    for (const key of keys) {
-        item[key]= xss(item[key])
-    }
-    return item
-}
 ReviewRouter.route('/')
     .all(requireBasicAuth)
     .get((req,res,next)=>{
@@ -37,15 +31,15 @@ ReviewRouter.route('/')
         //res.header('Access-Control-Allow-Origin','*')
         const {movieid,comment,userid,rating}= req.body
         const newReview= {movieid,comment,userid,rating}
-        //const data= sanitizedItem(newReview,['comment'])
-        GeneralService.insertItem(req.app.get('db'),'reviews',newReview)
+        const data= sanitizeItem(newReview,['comment'])
+        GeneralService.insertItem(req.app.get('db'),'reviews',data)
             .then(review=>{
                 res.status(201)
                 .location(path.posix.join(req.originalUrl,`/${review.id}`))
                 .json(review) 
             })
-            .catch(err=>console.log(err))
-            //next() // 404
+            .catch(next)
+            //.catch(err=>console.log(err))
             //.catch(next) //500 on heroku
         
     })
