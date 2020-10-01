@@ -35,6 +35,4 @@ function requireAdminAuth(req,res,next) {
 
 }
 
-
-
 module.exports= {requireBasicAuth,requireAdminAuth,requireUserToken}
