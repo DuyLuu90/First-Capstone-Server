@@ -26,8 +26,7 @@ ArtistRouter.route('/')
             res.status(201).location(path.posix.join(req.originalUrl,`/${ar.id}`))
             .json(ar)
         })
-        .catch(next)
-    
+        .catch(err=>console.log(err))
 })
 
 ArtistRouter.route('/:id')
