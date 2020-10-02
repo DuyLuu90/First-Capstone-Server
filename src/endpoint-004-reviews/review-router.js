@@ -34,7 +34,7 @@ ReviewRouter.route('/')
         const data= sanitizeItem(newReview,['comment'])
         GeneralService.insertItem(req.app.get('db'),'reviews',data)
             .then(review=>{
-                res.status(201)
+                return res.status(201)
                 .location(path.posix.join(req.originalUrl,`/${review.id}`))
                 .json(review) 
             })
