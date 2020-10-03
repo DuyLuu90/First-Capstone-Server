@@ -52,10 +52,10 @@ MovieRouter.route('/')
         const newMovie= {title,posterurl,trailerurl,summary,year,country,genres,published}
         GeneralService.insertItem(req.app.get('db'),'movies',newMovie)
             .then(movie=>{
-                res.status(201).location(path.posix.join(req.originalUrl,`/${movie.id}`))
+                return res.status(201).location(path.posix.join(req.originalUrl,`/${movie.id}`))
                 .json(sanitizedMovie(movie))
             })
-            .catch(next)
+            .catch(err=>console.log(err))
         
     })
 MovieRouter.route('/:id')
