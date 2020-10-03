@@ -21,9 +21,9 @@ ArtistRouter.route('/')
 .post(bodyParser,(req,res,next)=>{
     const {full_name,title,avatar,birth_year,country}= req.body
     const newArtist= {full_name,title,avatar,birth_year,country}
-    return GeneralService.insertItem(req.app.get('db'),'artists',newArtist)
+    GeneralService.insertItem(req.app.get('db'),'artists',newArtist)
         .then(ar=>{
-            res.status(201).location(path.posix.join(req.originalUrl,`/${ar.id}`))
+            return res.status(201).location(path.posix.join(req.originalUrl,`/${ar.id}`))
             .json(ar)
         })
         .catch(err=>console.log(err))
