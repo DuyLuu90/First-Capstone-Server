@@ -10,14 +10,13 @@ const ArtistService = {
     },
     
     insertArtist(db,item){
-        return db.into('artists').insert(item)
-        .returning('*').then(rows=>{
-            db.raw(
-                `SELECT setval('artists_id_seq',?)`,
-                [rows[rows.length-1].id])
-            return rows[0]
+        return db.select('*')
+        .then(artists=>{
+            let nextid=artists[artists.length-1].id+1
+            item.id= nextid
+            return db('artists').insert(item)
         })
-       
+        .then(ar=>ar)
     }
     
 }
