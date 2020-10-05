@@ -9,7 +9,7 @@ const ArtistService = {
         .orderBy('movies.year','desc')
     },
     
-    insertArtist(item){
+    insertArtist(db,item){
         return db.into('artists').insert(item)
         .returning('*').then(rows=>{
             db.raw(
