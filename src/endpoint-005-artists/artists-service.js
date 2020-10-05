@@ -8,6 +8,18 @@ const ArtistService = {
         .join('movies','cast.movieid','movies.id')
         .orderBy('movies.year','desc')
     },
+    
+    insertArtist(item){
+        return db.into('artists').insert(item)
+        .returning('*').then(rows=>{
+            db.raw(
+                `SELECT setval('artists_id_seq',?)`,
+                [rows[rows.length-1].id])
+            return rows[0]
+        })
+       
+    }
+    
 }
 
 module.exports= ArtistService
