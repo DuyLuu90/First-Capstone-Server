@@ -14,6 +14,7 @@ const ArtistService = {
         .then(artists=>{
             let nextid=Number(artists[artists.length-1].id)+1
             item.id= nextid
+            console.log(item,nextid)
             return db('artists').insert(item)
         })
         .then(ar=>ar)
