@@ -96,7 +96,7 @@ MovieRouter.route('/:id/cast')
         const newCast= {movieid: req.params.id,director,actor_one,actor_two}
         GeneralService.insertItem(req.app.get('db'),'movie_cast',newCast)
             .then(cast=>json(cast))
-            .catch(next)
+            .catch(err=>res.json(err))
     })
     .patch(bodyParser,(req,res,next)=>{
         const {director,actor_one,actor_two}= req.body
