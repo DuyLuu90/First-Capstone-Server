@@ -21,24 +21,21 @@ ArtistRouter.route('/')
 .post(bodyParser,(req,res,next)=>{
     const {full_name,title,avatar,birth_year,country}= req.body
     const newArtist= {full_name,title,avatar,birth_year,country}
-
-    
+    /*
     ArtistService.insertArtist(req.app.get('db'),newArtist)
     .then(ar=>{
         return res.status(201).location(path.posix.join(req.originalUrl,`/${ar.id}`))
         .json(ar)
     })
     .catch(err=>res.json(err))
+    */
     
-    /*
     GeneralService.insertItem(req.app.get('db'),'artists',newArtist)
         .then(ar=>{
             return res.status(201).location(path.posix.join(req.originalUrl,`/${ar.id}`))
             .json(ar)
         })
         .catch(err=>res.json(err))
-    */
-    
 })
 
 ArtistRouter.route('/:id')
