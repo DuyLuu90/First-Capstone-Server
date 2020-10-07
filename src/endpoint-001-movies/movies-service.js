@@ -8,18 +8,8 @@ const MovieService = {
         return db('movies').select('*').where('movies.country',country)
         .orderBy('movies.year','desc')
     },
-    /*
     updateMovieCast(db,movieid,fieldsToUpdate){
-        return db.from('movie_cast').where({movieid})
-            .then(()=>db('movie_cast').where({movieid}).update(fieldsToUpdate))
-            .catch(()=>{
-                const data= {...fieldsToUpdate, movieid:movieid}
-                return db.insert(data).into('movie_cast').returning('*').then(rows=>rows[0])
-            })
-    },*/
-    updateMovieCast(db,movieid,fieldsToUpdate){
-        return db('movie_cast').where({movieid}).update(fieldsToUpdate)
-            
+        return db('movie_cast').where({movieid}).update(fieldsToUpdate)     
     },
     getReviewsForMovie(db,movieid){
         return db
