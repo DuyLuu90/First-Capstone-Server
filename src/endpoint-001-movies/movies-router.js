@@ -92,8 +92,8 @@ MovieRouter.route('/:id/cast')
     .all(requireBasicAuth)
     .all((req,res,next)=>checkItemExists(req,res,next,'movies'))
     .post(bodyParser,(req,res,next)=>{
-        const {movieid,director,actor_one,actor_two}= req.body
-        const newCast= {movieid,director,actor_one,actor_two}
+        const {director,actor_one,actor_two}= req.body
+        const newCast= {movieid: req.params.id,director,actor_one,actor_two}
         GeneralService.insertItem(req.app.get('db'),'movie_cast',newCast)
             .then(cast=>json(cast))
             .catch(next)
